@@ -1,13 +1,15 @@
 package com.example.afapp.activities
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.afapp.R
 import com.example.afapp.databinding.ActivityMainBinding
 
@@ -23,7 +25,13 @@ class MainActivity : AppCompatActivity() {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     private fun initView() {
+        setSupportActionBar(binding.toolbar)
+
         // Show Back Button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -32,7 +40,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.registerButton.setOnClickListener {
-            Toast.makeText(this, "Register button pressed!", Toast.LENGTH_SHORT).show()
+
+            if(binding.emailTextField.editText?.text?.isNotEmpty() == true){
+                val email:String = binding.emailTextField.editText!!.text.toString()
+
+                Log.i("EMAIL", email)
+
+                val intent = Intent(this, UserRegisterActivity::class.java)
+                intent.putExtra(UserRegisterActivity.EXTRA_EMAIL, email)
+                startActivity(intent)
+            }
+            else{
+                val intent = Intent(this, UserRegisterActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

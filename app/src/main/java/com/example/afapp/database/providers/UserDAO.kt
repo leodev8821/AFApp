@@ -27,7 +27,12 @@ class UserDAO (context:Context) {
 
         // Insert the new row, returning the primary key value of the new row
         val newRowId = db.insert(PostModel.UserTable.TABLE_NAME, null, values)
-        Log.i("DATABASE", "New record id: $newRowId")
+        Log.i("DATABASE", "New  $newRowId record, " +
+                "Id: ${user.id} " +
+                "\nName: ${user.name}, " +
+                "\nLastname: ${user.lastname}, " +
+                "\nEmail: ${user.email}, " +
+                "\nPassword: ${user.password}")
 
         db.close()
 

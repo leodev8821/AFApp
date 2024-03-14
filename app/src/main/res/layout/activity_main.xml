@@ -8,7 +8,17 @@
     android:background="@color/black"
     tools:context=".activities.MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:popupTheme="@style/Theme.AFApp.PopupOverlay" />
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/mainCardView"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="25dp"
@@ -34,15 +44,18 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/loginTextField"
+                android:id="@+id/emailTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_margin="5dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="User"/>
+                    android:inputType="textEmailAddress"
+                    android:hint="Email"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

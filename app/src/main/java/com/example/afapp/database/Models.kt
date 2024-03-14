@@ -37,7 +37,7 @@ class PostModel {
                     "$COLUMN_NAME_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "$COLUMN_NAME TEXT, " +
                     "$COLUMN_LASTNAME TEXT, " +
-                    "$COLUMN_EMAIL TEXT, " +
+                    "$COLUMN_EMAIL TEXT NOT NULL UNIQUE, " +
                     "$COLUMN_PASSWORD TEXT)"
 
         const val SQL_DELETE_TABLE_USER = "DROP TABLE IF EXISTS $TABLE_NAME"

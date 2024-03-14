@@ -6,4 +6,6 @@
     </style>
 
     <style name="Theme.AFApp" parent="Base.Theme.AFApp" />
+
+    <style name="Theme.AFApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
