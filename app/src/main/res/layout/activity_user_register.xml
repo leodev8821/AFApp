@@ -8,6 +8,13 @@
     android:orientation="vertical"
     tools:context=".activities.UserRegisterActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin"
+        app:popupTheme="@style/Theme.AFApp.PopupOverlay" />
+
     <ImageView
         android:layout_width="120dp"
         android:layout_height="120dp"

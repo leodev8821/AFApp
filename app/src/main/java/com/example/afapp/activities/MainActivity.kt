@@ -35,10 +35,13 @@ class MainActivity : AppCompatActivity() {
         // Show Back Button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // LOGIN BUTTON
         binding.loginButton.setOnClickListener{
-            Toast.makeText(this, "Login button pressed!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, PostsActivity::class.java)
+            startActivity(intent)
         }
 
+        // REGISTER BUTTON
         binding.registerButton.setOnClickListener {
 
             if(binding.emailTextField.editText?.text?.isNotEmpty() == true){
@@ -57,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // TO SHOW A CONFIRM EXIT DIALOG
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         //super.onBackPressed()

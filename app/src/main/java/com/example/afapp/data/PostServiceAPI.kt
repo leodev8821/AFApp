@@ -7,6 +7,10 @@ import retrofit2.http.Query
 
 interface PostServiceAPI {
 
+    @GET("posts/")
+    suspend fun getAll(
+    ): Response<PostResponse>
+
     @GET("search")
     suspend fun searchByWord(
         @Query("word") query:String

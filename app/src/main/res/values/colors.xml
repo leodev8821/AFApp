@@ -2,4 +2,24 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="transparent">#00000000</color>
+    <color name="disabled">#626262</color>
+
+    <!-- Colors for obessedGrade -->
+    <color name="lowWeight">#747474</color>
+    <color name="normalWeight">#0DE504</color>
+    <color name="upWeight1">#F4DA7B</color>
+    <color name="upWeight2">#F4D14D</color>
+    <color name="overWeight1">#F67A7A</color>
+    <color name="overWeight2">#F65555</color>
+    <color name="overWeight3">#FD2323</color>
+    <color name="overWeight4">#FF0000</color>
+
+    <color name="card_title_background">#808C8C8C</color>
+    <color name="grey">#8C8C8C</color>
 </resources>

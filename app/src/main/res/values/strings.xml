@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">AFApp</string>
+    <string name="app_name">AnotherForumApp</string>
+
+    <string name="toastAbout">Created by LeoDev </string>
+
+    <!-- For PostActivity -->
+    <string name="empty_posts">No discussion to show</string>
+    <string name="empty_posts_advice">Press Refresh button on menu to load all posts</string>
 </resources>
