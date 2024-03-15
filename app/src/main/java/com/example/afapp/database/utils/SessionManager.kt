@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 class SessionManager (context:Context) {
 
     companion object {
-        val LOGGED_USER = -1
+        val LOGGED_USER = "LOGGED_USER"
     }
 
     private var sharedPref : SharedPreferences? = null
@@ -16,28 +16,20 @@ class SessionManager (context:Context) {
     }
 
     // Propiedades que se desean guardar en la Sesión
-    fun setLoggedUser (id: Int){
+    fun setLoggedUser (email: String){
         val editor = sharedPref?.edit()
         if (editor != null){
-            editor.putInt(LOGGED_USER.toString(), id)
+            editor.putString(LOGGED_USER, email)
             editor.apply()
         }
     }
 
-    fun getLoggedUser() : Int?{
-        return sharedPref?.getInt(LOGGED_USER.toString(), -1)
+    fun closeLoggedUser(){
+        sharedPref?.edit()?.remove(LOGGED_USER)?.apply()
     }
 
-/*
-    fun setFavoriteZodiac (id : String){
-        val editor = sharedPref?.edit()
-        if(editor != null){
-            editor.putString(FAVORITE_ZODIAC, id)
-            editor.apply()
-        }
+    fun getLoggedUser() : String?{
+        return sharedPref?.getString(LOGGED_USER, null).toString()
     }
 
-    fun getFavoriteZodiac () : String? {
-        return sharedPref?.getString(FAVORITE_ZODIAC, null)
-    }*/
 }

@@ -1,4 +1,4 @@
-package com.example.afapp.utils
+package com.example.afapp.database.utils
 
 class Constants {
 

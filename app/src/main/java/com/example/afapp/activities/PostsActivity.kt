@@ -1,5 +1,7 @@
 package com.example.afapp.activities
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
@@ -7,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.afapp.R
@@ -14,17 +17,23 @@ import com.example.afapp.adapters.PostAdapter
 import com.example.afapp.data.PostItemResponse
 import com.example.afapp.database.Post
 import com.example.afapp.data.PostServiceAPI
+import com.example.afapp.database.User
 import com.example.afapp.database.providers.PostDAO
-import com.example.afapp.database.utils.DBManager
+import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ActivityPostsBinding
 import com.example.afapp.databinding.ItemPostBinding
-import com.example.afapp.utils.RetrofitProvider
+import com.example.afapp.database.utils.RetrofitProvider
+import com.example.afapp.database.utils.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class PostsActivity : AppCompatActivity() {
+
+    companion object {
+        const val EXTRA_EMAIL = "USER_EMAIL"
+    }
 
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingItem: ItemPostBinding
@@ -33,6 +42,11 @@ class PostsActivity : AppCompatActivity() {
 
     private lateinit var postDAO: PostDAO
     private lateinit var postItemResponseList:List<PostItemResponse>
+
+    private var userLoged: String? = null
+
+    private var logged:Boolean = true
+    private lateinit var session:SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +60,10 @@ class PostsActivity : AppCompatActivity() {
     private fun initView() {
         setSupportActionBar(binding.toolbar)
 
-        // Show Back Button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        userLoged = intent.getStringExtra(EXTRA_EMAIL)
+
+        session = SessionManager(this)
+        userLoged?.let { session.setLoggedUser(it) }
 
         adapter = PostAdapter() {
             onItemClickListener(it)
@@ -125,14 +141,26 @@ class PostsActivity : AppCompatActivity() {
                 finish()
                 return true
             }
+            // Refresh option
             R.id.opt1 ->{
-                // TO LOAD INFO FROM API TO DB AND RECYCLERVIEW
-                fillRecyclerView()
-                Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
+                if(session.getLoggedUser() != null){
+                    // TO LOAD INFO FROM API TO DB AND RECYCLERVIEW
+                    fillRecyclerView()
+                    Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
+                }
             }
+            //Logout option
             R.id.opt2 ->{
-                Toast.makeText(this, "He pulsado Logout", Toast.LENGTH_LONG).show()
+                logged = !logged
+                session.setLoggedUser("")
+
+                intent = Intent(this, MainActivity::class.java)
+                finish()
+                startActivity(intent)
+
+                Toast.makeText(this, "Has cerrado sesión", Toast.LENGTH_LONG).show()
             }
+            //About option
             R.id.opt3 ->{
                 Toast.makeText(this, getString(R.string.toastAbout), Toast.LENGTH_LONG).show()
             }
@@ -154,6 +182,27 @@ class PostsActivity : AppCompatActivity() {
 
     private fun getCurrentDate():Long{
         return Calendar.getInstance().timeInMillis
+    }
+
+    // TO SHOW A CONFIRM EXIT DIALOG
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        showExitDialog()
+    }
+
+    private fun showExitDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setIcon(R.drawable.caution_svg)
+            .setTitle("Cerrar Sesión")
+            .setMessage("Esta seguro de que desea cerrar la sesión?")
+            .setPositiveButton("Yes") { _, _ ->
+                session.getLoggedUser()
+                finish() }
+            .setNegativeButton("No") { dialog, _ -> dialog?.cancel() }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
 }

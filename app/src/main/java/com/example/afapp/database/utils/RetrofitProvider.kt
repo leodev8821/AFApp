@@ -1,4 +1,4 @@
-package com.example.afapp.utils
+package com.example.afapp.database.utils
 
 import com.example.afapp.data.PostServiceAPI
 import retrofit2.Retrofit

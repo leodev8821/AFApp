@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.database.Post
+import com.example.afapp.database.User
 import com.example.afapp.databinding.ItemPostBinding
 import com.squareup.picasso.Picasso
 

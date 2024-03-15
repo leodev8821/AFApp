@@ -1,12 +1,8 @@
 package com.example.afapp.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,13 +22,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val userDAO = UserDAO(this)
+        userDAO = UserDAO(this)
         if (userDAO.find(1) == null) {
             userDAO.insert(User(-1, "Jaime", "Caicedo", "jaime@afapp.com" , "abcd1234"))
-        }
-
-        for (user in UserDAO(this).findAll()) {
-            Log.i("TEST", user.id.toString())
         }
 
         initView()
@@ -48,12 +40,21 @@ class MainActivity : AppCompatActivity() {
         // Show Back Button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+
         // LOGIN BUTTON
         binding.loginButton.setOnClickListener{
+            val email:String = binding.emailTextField.editText?.text.toString()
+            val password:String = binding.passwordTextField.editText?.text.toString()
 
-            userValidation()
-            val intent = Intent(this, PostsActivity::class.java)
-            startActivity(intent)
+            if(userValidation(email, password)){
+                val intent = Intent(this, PostsActivity::class.java)
+                intent.putExtra(PostsActivity.EXTRA_EMAIL, email)
+                startActivity(intent)
+            }
+            else{
+                Toast.makeText(this, "Datos incorrectos!", Toast.LENGTH_LONG).show()
+            }
+
         }
 
         // REGISTER BUTTON
@@ -73,11 +74,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun userValidation() {
-        userDAO = UserDAO(this)
-        val email:String = binding.emailTextField.editText?.text.toString()
-        userDAO.findByEmail(email)
+    //VALIDATE IF A USER IS REGISTERED
+    private fun userValidation(email:String, pass:String) :Boolean{
+        var ok:Boolean = false
 
+        if(email.isNotEmpty() && pass.isNotEmpty()){
+            val user = userDAO.findByEmailPass(email, pass)
+
+            if (user != null) {
+                if (email == user.email && pass == user.password){
+                    ok = true
+                }
+            }
+        }
+        return ok
     }
 
     // TO SHOW A CONFIRM EXIT DIALOG
