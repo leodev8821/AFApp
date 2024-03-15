@@ -11,9 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.afapp.R
+import com.example.afapp.database.User
+import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var userDAO:UserDAO
 
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +25,15 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val userDAO = UserDAO(this)
+        if (userDAO.find(1) == null) {
+            userDAO.insert(User(-1, "Jaime", "Caicedo", "jaime@afapp.com" , "abcd1234"))
+        }
+
+        for (user in UserDAO(this).findAll()) {
+            Log.i("TEST", user.id.toString())
+        }
 
         initView()
     }
@@ -37,6 +50,8 @@ class MainActivity : AppCompatActivity() {
 
         // LOGIN BUTTON
         binding.loginButton.setOnClickListener{
+
+            userValidation()
             val intent = Intent(this, PostsActivity::class.java)
             startActivity(intent)
         }
@@ -47,8 +62,6 @@ class MainActivity : AppCompatActivity() {
             if(binding.emailTextField.editText?.text?.isNotEmpty() == true){
                 val email:String = binding.emailTextField.editText!!.text.toString()
 
-                Log.i("EMAIL", email)
-
                 val intent = Intent(this, UserRegisterActivity::class.java)
                 intent.putExtra(UserRegisterActivity.EXTRA_EMAIL, email)
                 startActivity(intent)
@@ -58,6 +71,13 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+    }
+
+    private fun userValidation() {
+        userDAO = UserDAO(this)
+        val email:String = binding.emailTextField.editText?.text.toString()
+        userDAO.findByEmail(email)
+
     }
 
     // TO SHOW A CONFIRM EXIT DIALOG

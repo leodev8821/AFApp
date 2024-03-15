@@ -105,7 +105,6 @@ class UserDAO (context:Context) {
         db.close()
 
         return user
-
     }
 
     @SuppressLint("Range")
@@ -140,6 +139,38 @@ class UserDAO (context:Context) {
         db.close()
 
         return list
+    }
 
+    @SuppressLint("Range")
+    fun findByEmail(email:String): User? {
+
+        val db = dbManager.writableDatabase
+
+        val cursor = db.query(
+            PostModel.UserTable.TABLE_NAME,                         // The Table to query
+            PostModel.UserTable.COLUMN_NAMES,                        // The array of columns to return (pass null to get all)
+            "${PostModel.UserTable.COLUMN_NAME_ID} = $email",   // The columns for the WHERE clause
+            null,                                      // The values for the WHERE clause
+            null,                                          // don't group the rows
+            null,                                           // don't filter by row groups
+            null                                           // The sort order
+        )
+
+        var user: User? = null
+
+        if (cursor.moveToNext()){
+            val userId = cursor.getInt(cursor.getColumnIndex(PostModel.UserTable.COLUMN_NAME_ID))
+            val userName = cursor.getString(cursor.getColumnIndex(PostModel.UserTable.COLUMN_NAME))
+            val userLastname = cursor.getString(cursor.getColumnIndex(PostModel.UserTable.COLUMN_LASTNAME))
+            val userEmail = cursor.getString(cursor.getColumnIndex(PostModel.UserTable.COLUMN_EMAIL))
+            val userPassword = cursor.getString(cursor.getColumnIndex(PostModel.UserTable.COLUMN_PASSWORD))
+
+            // Every post is added to a list
+            user = User(userId, userName, userLastname, userEmail, userPassword)
+        }
+        cursor.close()
+        db.close()
+
+        return user
     }
 }

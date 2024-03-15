@@ -31,6 +31,5 @@ class DBManager (context:Context) :
     private fun onDelete(db: SQLiteDatabase) {
         db.execSQL(PostModel.UserTable.SQL_DELETE_TABLE_USER)
         db.execSQL(PostModel.PostTable.SQL_DELETE_TABLE_POST)
-
     }
 }

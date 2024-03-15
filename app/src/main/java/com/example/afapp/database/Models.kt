@@ -62,6 +62,7 @@ class PostModel {
             COLUMN_TITLE,
             COLUMN_BODY,
             COLUMN_USER_POST,
+            COLUMN_TAGS,
             COLUMN_REACTIONS,
             COLUMN_DATE,
         )

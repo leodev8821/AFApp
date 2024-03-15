@@ -1,36 +1,39 @@
 package com.example.afapp.activities
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.afapp.R
 import com.example.afapp.adapters.PostAdapter
-import com.example.afapp.data.PostServiceAPI
+import com.example.afapp.data.PostItemResponse
 import com.example.afapp.database.Post
+import com.example.afapp.data.PostServiceAPI
 import com.example.afapp.database.providers.PostDAO
-import com.example.afapp.databinding.ActivityMainBinding
+import com.example.afapp.database.utils.DBManager
 import com.example.afapp.databinding.ActivityPostsBinding
+import com.example.afapp.databinding.ItemPostBinding
 import com.example.afapp.utils.RetrofitProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class PostsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPostsBinding
+    private lateinit var bindingItem: ItemPostBinding
 
     private lateinit var adapter: PostAdapter
 
     private lateinit var postDAO: PostDAO
-    private lateinit var postList:List<Post>
+    private lateinit var postItemResponseList:List<PostItemResponse>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,47 +53,43 @@ class PostsActivity : AppCompatActivity() {
             onItemClickListener(it)
         }
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         binding.progress.visibility = View.GONE
         binding.recyclerView.visibility = View.GONE
         binding.emptyPlaceholder.visibility = View.VISIBLE
 
-        // TO LOAD INFO FROM API TO DB
-        fillDataBase()
     }
 
     private fun onItemClickListener(it: Int) {
 
     }
 
-    private fun fillDataBase(){
+    private fun fillRecyclerView(){
         postDAO = PostDAO(this)
         binding.progress.visibility = View.VISIBLE
 
         val service: PostServiceAPI = RetrofitProvider.getRetrofit()
 
         // Se hace la Co-Rutina para realizar la query
-        CoroutineScope(
-            Dispatchers.IO
-        ).launch {
+        CoroutineScope(Dispatchers.IO).launch {
 
             // Llamada en segundo plano
             val response = service.getAll()
-
             runOnUiThread {
                 binding.progress.visibility = View.GONE
                 // Modificar UI
                 if (response.body() != null) {
                     Log.i("HTTP", "Respuesta correcta :)")
-                    postList = response.body()?.results.orEmpty()
+                    postItemResponseList = response.body()?.posts.orEmpty()
 
-                    for(post in postList){
-
+                    if(postDAO.find(1) == null){
+                        fillDatabase(postDAO, postItemResponseList)
                     }
-                    adapter.updateItems(postList)
 
-                    if (postList.isNotEmpty()) {
+                    adapter.updateItems(postDAO.findAll())
+
+                    if (postItemResponseList.isNotEmpty()) {
                         binding.recyclerView.visibility = View.VISIBLE
                         binding.emptyPlaceholder.visibility = View.GONE
                     } else {
@@ -100,10 +99,23 @@ class PostsActivity : AppCompatActivity() {
                 } else {
                     Log.i("HTTP", "respuesta erronea :(")
                 }
-
             }
         }
 
+    }
+
+    private fun fillDatabase(dao:PostDAO, list:List<PostItemResponse>){
+        //Query to fill the database
+        for(post in list){
+            val date:Long = getCurrentDate()
+            var tags = ""
+            for (tag in post.tags){
+                tags += "$tag, "
+            }
+            val newPost = Post(-1, post.title, post.body, 1, tags, post.reactions, date)
+            dao.insert(newPost)
+            Log.i("DATABASE","New post from API added, ${post.title}")
+        }
     }
 
     // To listen the item selected in a menu
@@ -114,7 +126,9 @@ class PostsActivity : AppCompatActivity() {
                 return true
             }
             R.id.opt1 ->{
-                Toast.makeText(this, "He pulsado Refresh", Toast.LENGTH_LONG).show()
+                // TO LOAD INFO FROM API TO DB AND RECYCLERVIEW
+                fillRecyclerView()
+                Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
             }
             R.id.opt2 ->{
                 Toast.makeText(this, "He pulsado Logout", Toast.LENGTH_LONG).show()
@@ -129,6 +143,17 @@ class PostsActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
+    }
+
+    private fun setCurrentDate(){
+        bindingItem = ItemPostBinding.inflate(layoutInflater)
+        val calendar = getCurrentDate()
+        val dateFormat = DateFormat.format("dd-MMMM-yyyy", calendar)
+        bindingItem.dateItemtextView.text = dateFormat
+    }
+
+    private fun getCurrentDate():Long{
+        return Calendar.getInstance().timeInMillis
     }
 
 }

@@ -1,16 +1,15 @@
 package com.example.afapp.data
 
-import com.example.afapp.database.Post
 import com.google.gson.annotations.SerializedName
 
 class PostResponse (
-    @SerializedName("results") val results:List<Post>
+    @SerializedName("posts") val posts:List<PostItemResponse>
 )
 {
 
 }
 
-class Post (
+class PostItemResponse (
     @SerializedName("id") val id:Int,
     @SerializedName("title") val title:String,
     @SerializedName("body") val body:String,
