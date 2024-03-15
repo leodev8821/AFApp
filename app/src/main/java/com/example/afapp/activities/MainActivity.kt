@@ -9,9 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.afapp.R
 import com.example.afapp.database.User
 import com.example.afapp.database.providers.UserDAO
+import com.example.afapp.database.utils.SessionManager
 import com.example.afapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var session: SessionManager
 
     private lateinit var userDAO:UserDAO
 
@@ -25,6 +28,13 @@ class MainActivity : AppCompatActivity() {
         userDAO = UserDAO(this)
         if (userDAO.find(1) == null) {
             userDAO.insert(User(-1, "Jaime", "Caicedo", "jaime@afapp.com" , "abcd1234"))
+        }
+
+        //Go to PostActivity if is logged
+        session = SessionManager(this)
+        if(session.getLoggedUser()!!.isNotEmpty()){
+            val intent = Intent(this, PostsActivity::class.java)
+            startActivity(intent)
         }
 
         initView()
