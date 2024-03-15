@@ -2,7 +2,6 @@ package com.example.afapp.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,6 @@ class UserRegisterActivity : AppCompatActivity() {
     }
 
     private var email:String? = null
-    private lateinit var user: User
     private lateinit var userDAO:UserDAO
 
     private lateinit var binding:ActivityUserRegisterBinding
