@@ -25,11 +25,11 @@ class SessionManager (context:Context) {
     }
 
     fun closeLoggedUser(){
-        sharedPref?.edit()?.remove(LOGGED_USER)?.apply()
+        sharedPref?.edit()?.putString(LOGGED_USER, "null")?.apply()
     }
 
     fun getLoggedUser() : String?{
-        return sharedPref?.getString(LOGGED_USER, null).toString()
+        return sharedPref?.getString(LOGGED_USER, "null")
     }
 
 }

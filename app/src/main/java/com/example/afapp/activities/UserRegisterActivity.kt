@@ -57,9 +57,15 @@ class UserRegisterActivity : AppCompatActivity() {
             val pass1:String = binding.password1TextField.editText?.text.toString()
             val pass2:String = binding.password2TextField.editText?.text.toString()
 
-            val message:String = registerUser(name, lastname, email, pass1, pass2)
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
+            if(email == null){
+                val inputEmail:String = binding.emailTextField.editText?.text.toString()
+                val message:String = registerUser(name, lastname, inputEmail, pass1, pass2)
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val message:String = registerUser(name, lastname, email, pass1, pass2)
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.afapp.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,12 +20,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userDAO:UserDAO
 
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //To create the admin user if it doesn't exist
         userDAO = UserDAO(this)
         if (userDAO.find(1) == null) {
             userDAO.insert(User(-1, "Jaime", "Caicedo", "jaime@afapp.com" , "abcd1234"))
@@ -32,7 +35,8 @@ class MainActivity : AppCompatActivity() {
 
         //Go to PostActivity if is logged
         session = SessionManager(this)
-        if(session.getLoggedUser()!!.isNotEmpty()){
+
+        if(session.getLoggedUser() != "null"){
             val intent = Intent(this, PostsActivity::class.java)
             startActivity(intent)
         }
@@ -86,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
     //VALIDATE IF A USER IS REGISTERED
     private fun userValidation(email:String, pass:String) :Boolean{
-        var ok:Boolean = false
+        var ok = false
 
         if(email.isNotEmpty() && pass.isNotEmpty()){
             val user = userDAO.findByEmailPass(email, pass)

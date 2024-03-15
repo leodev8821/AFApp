@@ -71,9 +71,17 @@ class PostsActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        binding.progress.visibility = View.GONE
-        binding.recyclerView.visibility = View.GONE
-        binding.emptyPlaceholder.visibility = View.VISIBLE
+        if(logged){
+            binding.progress.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.VISIBLE
+            binding.emptyPlaceholder.visibility = View.GONE
+            fillRecyclerView()
+        }
+        else{
+            binding.progress.visibility = View.GONE
+            binding.recyclerView.visibility = View.GONE
+            binding.emptyPlaceholder.visibility = View.VISIBLE
+        }
 
     }
 
@@ -152,7 +160,7 @@ class PostsActivity : AppCompatActivity() {
             //Logout option
             R.id.opt2 ->{
                 logged = !logged
-                session.setLoggedUser("")
+                session.closeLoggedUser()
 
                 intent = Intent(this, MainActivity::class.java)
                 finish()
