@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         //Go to PostActivity if is logged
         session = SessionManager(this)
 
-        if(session.getLoggedUser() != "null"){
+        if(session.getUserLoginState()){
             val intent = Intent(this, PostsActivity::class.java)
             startActivity(intent)
         }
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             val password:String = binding.passwordTextField.editText?.text.toString()
 
             if(userValidation(email, password)){
+                session.setUserLoginState(true)
                 val intent = Intent(this, PostsActivity::class.java)
                 intent.putExtra(PostsActivity.EXTRA_EMAIL, email)
                 startActivity(intent)

@@ -3,7 +3,6 @@ package com.example.afapp.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -12,14 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.R
 import com.example.afapp.adapters.PostAdapter
 import com.example.afapp.data.PostItemResponse
 import com.example.afapp.database.Post
 import com.example.afapp.data.PostServiceAPI
-import com.example.afapp.database.User
 import com.example.afapp.database.providers.PostDAO
-import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ActivityPostsBinding
 import com.example.afapp.databinding.ItemPostBinding
 import com.example.afapp.database.utils.RetrofitProvider
@@ -41,12 +39,11 @@ class PostsActivity : AppCompatActivity() {
     private lateinit var adapter: PostAdapter
 
     private lateinit var postDAO: PostDAO
-    private lateinit var postItemResponseList:List<PostItemResponse>
 
     private var userLoged: String? = null
 
-    private var logged:Boolean = true
     private lateinit var session:SessionManager
+    private var isLogged:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,81 +51,94 @@ class PostsActivity : AppCompatActivity() {
         binding = ActivityPostsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //If Post is empty, no data is showed
+        postDAO = PostDAO(this)
+
+        if(postDAO.find(1) == null){
+            binding.progress.visibility = View.GONE
+            binding.recyclerView.visibility = View.GONE
+            binding.emptyPlaceholder.visibility = View.VISIBLE
+        }
+        else{
+            loadData()
+        }
+
         initView()
+
     }
 
     private fun initView() {
         setSupportActionBar(binding.toolbar)
 
+        //Get the email from MainActivity
         userLoged = intent.getStringExtra(EXTRA_EMAIL)
 
+        //Save the email in the session
         session = SessionManager(this)
-        userLoged?.let { session.setLoggedUser(it) }
 
-        adapter = PostAdapter() {
-            onItemClickListener(it)
-        }
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        isLogged= session.getUserLoginState()
 
-        if(logged){
-            binding.progress.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.VISIBLE
-            binding.emptyPlaceholder.visibility = View.GONE
-            fillRecyclerView()
+        //Load all the post if a user is logged
+        if(isLogged){
+            loadData()
         }
-        else{
-            binding.progress.visibility = View.GONE
-            binding.recyclerView.visibility = View.GONE
-            binding.emptyPlaceholder.visibility = View.VISIBLE
-        }
-
     }
 
     private fun onItemClickListener(it: Int) {
 
     }
 
-    private fun fillRecyclerView(){
-        postDAO = PostDAO(this)
+    //Load the RecyclerView with data from DB
+    private fun loadData(){
+
         binding.progress.visibility = View.VISIBLE
 
+        adapter = PostAdapter() {
+            onItemClickListener(it)
+        }
+        val recycler:RecyclerView = binding.recyclerView
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.adapter = adapter
+
+        if (postDAO.find(1) != null) {
+            recycler.visibility = View.VISIBLE
+            binding.emptyPlaceholder.visibility = View.GONE
+            binding.progress.visibility = View.GONE
+            adapter.updateItems(postDAO.findAll())
+        } else {
+            recycler.visibility = View.GONE
+            binding.emptyPlaceholder.visibility = View.VISIBLE
+        }
+    }
+
+    // Fetch data from the API and fill the DB
+    private fun fetchData(){
+        var postItemResponseList:List<PostItemResponse>
         val service: PostServiceAPI = RetrofitProvider.getRetrofit()
 
-        // Se hace la Co-Rutina para realizar la query
+        // Make the Co-Routine to make the Query
         CoroutineScope(Dispatchers.IO).launch {
 
-            // Llamada en segundo plano
+            // Background call
             val response = service.getAll()
-            runOnUiThread {
+            runOnUiThread{
+                // Modify the UI
                 binding.progress.visibility = View.GONE
-                // Modificar UI
+
                 if (response.body() != null) {
                     Log.i("HTTP", "Respuesta correcta :)")
                     postItemResponseList = response.body()?.posts.orEmpty()
-
-                    if(postDAO.find(1) == null){
-                        fillDatabase(postDAO, postItemResponseList)
-                    }
-
-                    adapter.updateItems(postDAO.findAll())
-
-                    if (postItemResponseList.isNotEmpty()) {
-                        binding.recyclerView.visibility = View.VISIBLE
-                        binding.emptyPlaceholder.visibility = View.GONE
-                    } else {
-                        binding.recyclerView.visibility = View.GONE
-                        binding.emptyPlaceholder.visibility = View.VISIBLE
-                    }
+                    fillDatabase(postItemResponseList)
                 } else {
+                    postItemResponseList = listOf()
                     Log.i("HTTP", "respuesta erronea :(")
                 }
             }
         }
-
     }
 
-    private fun fillDatabase(dao:PostDAO, list:List<PostItemResponse>){
+    // Fill the DB with data from the API
+    private fun fillDatabase(list:List<PostItemResponse>){
         //Query to fill the database
         for(post in list){
             val date:Long = getCurrentDate()
@@ -137,7 +147,7 @@ class PostsActivity : AppCompatActivity() {
                 tags += "$tag, "
             }
             val newPost = Post(-1, post.title, post.body, 1, tags, post.reactions, date)
-            dao.insert(newPost)
+            postDAO.insert(newPost)
             Log.i("DATABASE","New post from API added, ${post.title}")
         }
     }
@@ -151,16 +161,19 @@ class PostsActivity : AppCompatActivity() {
             }
             // Refresh option
             R.id.opt1 ->{
-                if(session.getLoggedUser() != null){
-                    // TO LOAD INFO FROM API TO DB AND RECYCLERVIEW
-                    fillRecyclerView()
+                if(isLogged){
+                    // If DB is empty, fill with the data from API
+                    if(postDAO.find(1) == null){
+                        fetchData()
+                    }
+                    loadData()
                     Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
                 }
             }
             //Logout option
             R.id.opt2 ->{
-                logged = !logged
-                session.closeLoggedUser()
+                isLogged = !isLogged
+                session.setUserLoginState(isLogged)
 
                 intent = Intent(this, MainActivity::class.java)
                 finish()
@@ -181,13 +194,6 @@ class PostsActivity : AppCompatActivity() {
         return true
     }
 
-    private fun setCurrentDate(){
-        bindingItem = ItemPostBinding.inflate(layoutInflater)
-        val calendar = getCurrentDate()
-        val dateFormat = DateFormat.format("dd-MMMM-yyyy", calendar)
-        bindingItem.dateItemtextView.text = dateFormat
-    }
-
     private fun getCurrentDate():Long{
         return Calendar.getInstance().timeInMillis
     }
@@ -205,7 +211,7 @@ class PostsActivity : AppCompatActivity() {
             .setTitle("Cerrar Sesión")
             .setMessage("Esta seguro de que desea cerrar la sesión?")
             .setPositiveButton("Yes") { _, _ ->
-                session.getLoggedUser()
+                session.getUserLoginState()
                 finish() }
             .setNegativeButton("No") { dialog, _ -> dialog?.cancel() }
 

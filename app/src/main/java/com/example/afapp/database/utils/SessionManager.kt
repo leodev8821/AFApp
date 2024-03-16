@@ -5,31 +5,22 @@ import android.content.SharedPreferences
 
 class SessionManager (context:Context) {
 
+    private var sharedPref : SharedPreferences = context.getSharedPreferences("my_session", Context.MODE_PRIVATE)
+
     companion object {
-        val LOGGED_USER = "LOGGED_USER"
+        const val USER_LOGIN_STATE = "USER_LOGIN_STATE"
     }
 
-    private var sharedPref : SharedPreferences? = null
-
-    init{
-        sharedPref = context.getSharedPreferences("my_session", Context.MODE_PRIVATE)
-    }
 
     // Propiedades que se desean guardar en la Sesión
-    fun setLoggedUser (email: String){
-        val editor = sharedPref?.edit()
-        if (editor != null){
-            editor.putString(LOGGED_USER, email)
-            editor.apply()
-        }
+    fun setUserLoginState (isLoggedIn: Boolean){
+        val editor = sharedPref.edit()
+        editor.putBoolean(USER_LOGIN_STATE, isLoggedIn)
+        editor.apply()
     }
 
-    fun closeLoggedUser(){
-        sharedPref?.edit()?.putString(LOGGED_USER, "null")?.apply()
-    }
-
-    fun getLoggedUser() : String?{
-        return sharedPref?.getString(LOGGED_USER, "null")
+    fun getUserLoginState(): Boolean{
+        return sharedPref.getBoolean(USER_LOGIN_STATE, false)
     }
 
 }

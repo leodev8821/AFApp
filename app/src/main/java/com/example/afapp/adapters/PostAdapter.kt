@@ -1,5 +1,6 @@
 package com.example.afapp.adapters
 
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -41,12 +42,14 @@ class PostViewHolder(
     fun render(
         post:Post
     ){
+        val dateFormat = DateFormat.format("dd-MMMM-yyyy", post.date)
+
         binding.titleItemTextView.text = post.title
         binding.bodyItemTextView.text = post.body
         binding.tagsItemTextView.text = post.tags
         binding.userItemTextView.text = post.userPost.toString()
         binding.reactionsItemTextView.text = post.reactions.toString()
-        binding.dateItemtextView.text = post.date.toString()
+        binding.dateItemtextView.text = dateFormat
     }
 
 }
