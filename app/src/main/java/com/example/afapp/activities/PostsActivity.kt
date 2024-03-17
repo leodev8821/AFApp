@@ -24,7 +24,6 @@ import com.example.afapp.database.User
 import com.example.afapp.database.providers.PostDAO
 import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ActivityPostsBinding
-import com.example.afapp.databinding.ItemPostBinding
 import com.example.afapp.database.utils.RetrofitProvider
 import com.example.afapp.database.utils.SessionManager
 import com.example.afapp.databinding.NewPostAlertDialogBinding
@@ -33,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import kotlin.random.Random
 
 class PostsActivity : AppCompatActivity() {
 
@@ -147,6 +147,11 @@ class PostsActivity : AppCompatActivity() {
         //Get the current Date
         val date:Long = getCurrentDate()
 
+        //Generate a random number for Reactions
+        val reactions:Int = Random.nextInt(1,100)
+
+        //Save the new Post in the DB
+        val newPost:Post = Post(-1,postTitle, postBody, )
     }
 
     private fun onItemClickListener(it: Int) {

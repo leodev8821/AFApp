@@ -113,7 +113,6 @@ class UserRegisterActivity : AppCompatActivity() {
         else{
             return "Email cannot be empty"
         }
-
     }
 
     private fun comparePass(pass1:String, pass2:String) : Boolean{
