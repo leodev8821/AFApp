@@ -7,6 +7,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,11 +20,15 @@ import com.example.afapp.adapters.PostAdapter
 import com.example.afapp.data.PostItemResponse
 import com.example.afapp.database.Post
 import com.example.afapp.data.PostServiceAPI
+import com.example.afapp.database.User
 import com.example.afapp.database.providers.PostDAO
+import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ActivityPostsBinding
 import com.example.afapp.databinding.ItemPostBinding
 import com.example.afapp.database.utils.RetrofitProvider
 import com.example.afapp.database.utils.SessionManager
+import com.example.afapp.databinding.NewPostAlertDialogBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,17 +37,24 @@ import java.util.Calendar
 class PostsActivity : AppCompatActivity() {
 
     companion object {
-        const val EXTRA_EMAIL = "USER_EMAIL"
+        const val EXTRA_EMAIL = "EMAIL"
     }
+    private var email:String? = null
 
     private lateinit var binding: ActivityPostsBinding
-    private lateinit var bindingItem: ItemPostBinding
+    private lateinit var bindingAlert:NewPostAlertDialogBinding
+
+    private lateinit var progress:FrameLayout
+    private lateinit var recyclerView:RecyclerView
+    private lateinit var emptyPlaceholder:LinearLayout
+    private lateinit var newPostButton:FloatingActionButton
+
+    private lateinit var postList:List<Post>
 
     private lateinit var adapter: PostAdapter
 
     private lateinit var postDAO: PostDAO
-
-    private var userLoged: String? = null
+    private lateinit var userDAO: UserDAO
 
     private lateinit var session:SessionManager
     private var isLogged:Boolean = false
@@ -51,13 +65,20 @@ class PostsActivity : AppCompatActivity() {
         binding = ActivityPostsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        progress = binding.progress
+        recyclerView = binding.recyclerView
+        emptyPlaceholder = binding.emptyPlaceholder
+        newPostButton = binding.newPostFloatingActionButton
+
+        userDAO = UserDAO(this)
+
         //If Post is empty, no data is showed
         postDAO = PostDAO(this)
 
         if(postDAO.find(1) == null){
-            binding.progress.visibility = View.GONE
-            binding.recyclerView.visibility = View.GONE
-            binding.emptyPlaceholder.visibility = View.VISIBLE
+            progress.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+            emptyPlaceholder.visibility = View.VISIBLE
         }
         else{
             loadData()
@@ -70,9 +91,6 @@ class PostsActivity : AppCompatActivity() {
     private fun initView() {
         setSupportActionBar(binding.toolbar)
 
-        //Get the email from MainActivity
-        userLoged = intent.getStringExtra(EXTRA_EMAIL)
-
         //Save the email in the session
         session = SessionManager(this)
 
@@ -82,6 +100,53 @@ class PostsActivity : AppCompatActivity() {
         if(isLogged){
             loadData()
         }
+
+        newPostButton.setOnClickListener{
+            newPostAlert()
+        }
+    }
+
+    private fun newPostAlert() {
+        //Inflate the AlertDialog layout
+        bindingAlert = NewPostAlertDialogBinding.inflate(layoutInflater)
+
+        //EditText from AlertDialog layout
+        val titleEditText:EditText = bindingAlert.titleTextField.editText!!
+        val bodyEditText:EditText = bindingAlert.bodyTextField.editText!!
+        val tagsEditText:EditText = bindingAlert.tagsEditText.editText!!
+
+        //Create AlertDialog
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder
+            .setTitle("Add a new Post")
+            .setView(bindingAlert.root)
+            .setPositiveButton("Add") { _, _ ->
+                val postTitle:String = titleEditText.text.toString()
+                val postBody:String = bodyEditText.text.toString()
+                val postTags:String = tagsEditText.text.toString()
+                newPost(postTitle,postBody,postTags)
+                refreshData()
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
+
+        builder.show()
+    }
+
+    private fun refreshData() {
+        postList = postDAO.findAll()
+        adapter.updateItems(postList)
+    }
+
+    private fun newPost(postTitle: String, postBody: String, postTags: String) {
+        //Get the email from MainActivity
+        email = intent.getStringExtra(EXTRA_EMAIL)
+
+        //Get the user from the DB
+        val emailUser:User? = userDAO.find(email)
+
+        //Get the current Date
+        val date:Long = getCurrentDate()
+
     }
 
     private fun onItemClickListener(it: Int) {
@@ -91,23 +156,23 @@ class PostsActivity : AppCompatActivity() {
     //Load the RecyclerView with data from DB
     private fun loadData(){
 
-        binding.progress.visibility = View.VISIBLE
+        progress.visibility = View.VISIBLE
 
         adapter = PostAdapter() {
             onItemClickListener(it)
         }
-        val recycler:RecyclerView = binding.recyclerView
-        recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = adapter
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
         if (postDAO.find(1) != null) {
-            recycler.visibility = View.VISIBLE
-            binding.emptyPlaceholder.visibility = View.GONE
-            binding.progress.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+            emptyPlaceholder.visibility = View.GONE
+            progress.visibility = View.GONE
             adapter.updateItems(postDAO.findAll())
         } else {
-            recycler.visibility = View.GONE
-            binding.emptyPlaceholder.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            emptyPlaceholder.visibility = View.VISIBLE
         }
     }
 
@@ -123,7 +188,7 @@ class PostsActivity : AppCompatActivity() {
             val response = service.getAll()
             runOnUiThread{
                 // Modify the UI
-                binding.progress.visibility = View.GONE
+                progress.visibility = View.GONE
 
                 if (response.body() != null) {
                     Log.i("HTTP", "Respuesta correcta :)")
@@ -154,13 +219,17 @@ class PostsActivity : AppCompatActivity() {
 
     // To listen the item selected in a menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val refreshOpt:Int = R.id.opt1
+        val logOutOpt:Int = R.id.opt2
+        val aboutOpt:Int = R.id.opt3
+
         when (item.itemId){
             android.R.id.home -> {
                 finish()
                 return true
             }
             // Refresh option
-            R.id.opt1 ->{
+            refreshOpt ->{
                 if(isLogged){
                     // If DB is empty, fill with the data from API
                     if(postDAO.find(1) == null){
@@ -171,7 +240,7 @@ class PostsActivity : AppCompatActivity() {
                 }
             }
             //Logout option
-            R.id.opt2 ->{
+            logOutOpt->{
                 isLogged = !isLogged
                 session.setUserLoginState(isLogged)
 
@@ -182,7 +251,7 @@ class PostsActivity : AppCompatActivity() {
                 Toast.makeText(this, "Has cerrado sesión", Toast.LENGTH_LONG).show()
             }
             //About option
-            R.id.opt3 ->{
+            aboutOpt ->{
                 Toast.makeText(this, getString(R.string.toastAbout), Toast.LENGTH_LONG).show()
             }
         }
@@ -211,7 +280,8 @@ class PostsActivity : AppCompatActivity() {
             .setTitle("Cerrar Sesión")
             .setMessage("Esta seguro de que desea cerrar la sesión?")
             .setPositiveButton("Yes") { _, _ ->
-                session.getUserLoginState()
+                isLogged = !isLogged
+                session.setUserLoginState(isLogged)
                 finish() }
             .setNegativeButton("No") { dialog, _ -> dialog?.cancel() }
 

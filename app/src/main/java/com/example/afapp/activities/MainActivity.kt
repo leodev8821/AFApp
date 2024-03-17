@@ -3,6 +3,8 @@ package com.example.afapp.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,8 @@ import com.example.afapp.database.User
 import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.database.utils.SessionManager
 import com.example.afapp.databinding.ActivityMainBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,16 +24,26 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var emailEditText:EditText
+    private lateinit var passwordEditText:EditText
+    private lateinit var loginButton:Button
+    private lateinit var registerButton:Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        emailEditText = binding.emailTextField.editText!!
+        passwordEditText = binding.passwordTextField.editText!!
+        loginButton = binding.loginButton
+        registerButton = binding.registerButton
+        
         //To create the admin user if it doesn't exist
         userDAO = UserDAO(this)
-        if (userDAO.find(1) == null) {
-            userDAO.insert(User(-1, "Jaime", "Caicedo", "jaime@afapp.com" , "abcd1234"))
+        if (userDAO.find("jaime@afapp.com") == null) {
+            userDAO.insert(User(-1, "Jaime", "Caicedo", "jaime@afapp.com" , "asdf1234"))
         }
 
         //Go to PostActivity if is logged
@@ -48,21 +62,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        setSupportActionBar(binding.toolbar)
-
-        // Show Back Button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
 
         // LOGIN BUTTON
-        binding.loginButton.setOnClickListener{
-            val email:String = binding.emailTextField.editText?.text.toString()
-            val password:String = binding.passwordTextField.editText?.text.toString()
+        loginButton.setOnClickListener{
+            val email:String = emailEditText.text.toString()
+            val password:String = passwordEditText.text.toString()
 
             if(userValidation(email, password)){
                 session.setUserLoginState(true)
-                val intent = Intent(this, PostsActivity::class.java)
                 intent.putExtra(PostsActivity.EXTRA_EMAIL, email)
+                val intent = Intent(this, PostsActivity::class.java)
                 startActivity(intent)
             }
             else{
@@ -72,10 +81,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // REGISTER BUTTON
-        binding.registerButton.setOnClickListener {
+        registerButton.setOnClickListener {
 
-            if(binding.emailTextField.editText?.text?.isNotEmpty() == true){
-                val email:String = binding.emailTextField.editText!!.text.toString()
+            if(emailEditText.text?.isNotEmpty() == true){
+                val email:String = emailEditText.text.toString()
 
                 val intent = Intent(this, UserRegisterActivity::class.java)
                 intent.putExtra(UserRegisterActivity.EXTRA_EMAIL, email)

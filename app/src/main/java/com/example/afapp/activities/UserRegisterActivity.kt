@@ -3,6 +3,8 @@ package com.example.afapp.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.afapp.database.User
@@ -19,11 +21,29 @@ class UserRegisterActivity : AppCompatActivity() {
     private lateinit var userDAO:UserDAO
 
     private lateinit var binding:ActivityUserRegisterBinding
+
+    private lateinit var emailEditText:EditText
+    private lateinit var nameEditText:EditText
+    private lateinit var lastnameEditText:EditText
+    private lateinit var pass1EditText:EditText
+    private lateinit var pass2EditText:EditText
+    private lateinit var registerButton:Button
+    private lateinit var clearButton:Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityUserRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        emailEditText = binding.emailTextField.editText!!
+        nameEditText = binding.nameTextField.editText!!
+        lastnameEditText = binding.lastnameTextField.editText!!
+        pass1EditText = binding.password1TextField.editText!!
+        pass2EditText = binding.password2TextField.editText!!
+
+        registerButton = binding.createUserButton
+        clearButton = binding.clearButton
 
         initView()
     }
@@ -34,29 +54,30 @@ class UserRegisterActivity : AppCompatActivity() {
 
         userDAO = UserDAO(this)
 
+        //Get the email from MainActivity
         email = intent.getStringExtra(EXTRA_EMAIL)
 
         // To focus Name EditText if email != null
         if (email != null){
-            binding.emailTextField.editText?.setText(email)
-            binding.nameTextField.requestFocus()
+            emailEditText.setText(email)
+            nameEditText.requestFocus()
         }
         else{
-            binding.emailTextField.requestFocus()
+            emailEditText.requestFocus()
         }
 
-        binding.clearButton.setOnClickListener {
+        clearButton.setOnClickListener {
             clearForm()
         }
 
-        binding.createUserButton.setOnClickListener {
-            val name:String = binding.nameTextField.editText?.text.toString()
-            val lastname:String = binding.lastnameTextField.editText?.text.toString()
-            val pass1:String = binding.password1TextField.editText?.text.toString()
-            val pass2:String = binding.password2TextField.editText?.text.toString()
+        registerButton.setOnClickListener {
+            val name:String = nameEditText.text.toString()
+            val lastname:String = lastnameEditText.text.toString()
+            val pass1:String = pass1EditText.text.toString()
+            val pass2:String = pass2EditText.text.toString()
 
             if(email == null){
-                val inputEmail:String = binding.emailTextField.editText?.text.toString()
+                val inputEmail:String = emailEditText.text.toString()
                 val message:String = registerUser(name, lastname, inputEmail, pass1, pass2)
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
@@ -100,12 +121,12 @@ class UserRegisterActivity : AppCompatActivity() {
     }
 
     private fun clearForm() {
-        binding.emailTextField.editText?.setText("")
-        binding.nameTextField.editText?.setText("")
-        binding.lastnameTextField.editText?.setText("")
-        binding.password1TextField.editText?.setText("")
-        binding.password2TextField.editText?.setText("")
-        binding.emailTextField.editText?.focusable
+        emailEditText.setText("")
+        nameEditText.setText("")
+        lastnameEditText.setText("")
+        pass1EditText.setText("")
+        pass2EditText.setText("")
+        emailEditText.focusable
     }
 
     private fun initActionBar() {
