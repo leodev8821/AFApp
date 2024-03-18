@@ -68,10 +68,11 @@ class MainActivity : AppCompatActivity() {
             val email:String = emailEditText.text.toString()
             val password:String = passwordEditText.text.toString()
 
-            if(userValidation(email, password)){
+            if(userValidation(email, password) && email.isNotEmpty() && password.isNotEmpty()){
                 session.setUserLoginState(true)
-                intent.putExtra(PostsActivity.EXTRA_EMAIL, email)
+                session.setUserLoginEmail(email)
                 val intent = Intent(this, PostsActivity::class.java)
+                intent.putExtra(PostsActivity.EXTRA_EMAIL, email)
                 startActivity(intent)
             }
             else{

@@ -83,7 +83,7 @@ class UserDAO (context:Context) {
         val cursor = db.query(
             PostModel.UserTable.TABLE_NAME,                         // The Table to query
             PostModel.UserTable.COLUMN_NAMES,                        // The array of columns to return (pass null to get all)
-            "${PostModel.UserTable.COLUMN_EMAIL} = $email",   // The columns for the WHERE clause
+            "${PostModel.UserTable.COLUMN_EMAIL} = '$email'",   // The columns for the WHERE clause
             null,                                      // The values for the WHERE clause
             null,                                          // don't group the rows
             null,                                           // don't filter by row groups

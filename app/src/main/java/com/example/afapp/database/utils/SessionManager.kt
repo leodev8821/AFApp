@@ -9,6 +9,7 @@ class SessionManager (context:Context) {
 
     companion object {
         const val USER_LOGIN_STATE = "USER_LOGIN_STATE"
+        const val USER_EMAIL = "USER_EMAIL"
     }
 
 
@@ -21,6 +22,16 @@ class SessionManager (context:Context) {
 
     fun getUserLoginState(): Boolean{
         return sharedPref.getBoolean(USER_LOGIN_STATE, false)
+    }
+
+    fun setUserLoginEmail (email: String){
+        val editor = sharedPref.edit()
+        editor.putString(USER_EMAIL, email)
+        editor.apply()
+    }
+
+    fun getUserLoginEmail(): String? {
+        return sharedPref.getString(USER_EMAIL, "")
     }
 
 }

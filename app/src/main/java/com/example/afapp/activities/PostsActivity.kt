@@ -39,7 +39,7 @@ class PostsActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_EMAIL = "EMAIL"
     }
-    private var email:String? = null
+    private var userEmail:String = ""
 
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingAlert:NewPostAlertDialogBinding
@@ -50,6 +50,7 @@ class PostsActivity : AppCompatActivity() {
     private lateinit var newPostButton:FloatingActionButton
 
     private lateinit var postList:List<Post>
+    private lateinit var newPost:Post
 
     private lateinit var adapter: PostAdapter
 
@@ -58,6 +59,8 @@ class PostsActivity : AppCompatActivity() {
 
     private lateinit var session:SessionManager
     private var isLogged:Boolean = false
+    private var loggedEmail:String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +72,14 @@ class PostsActivity : AppCompatActivity() {
         recyclerView = binding.recyclerView
         emptyPlaceholder = binding.emptyPlaceholder
         newPostButton = binding.newPostFloatingActionButton
+
+        //Save the email in the session
+        session = SessionManager(this)
+
+        isLogged= session.getUserLoginState()
+        userEmail = intent.getStringExtra(EXTRA_EMAIL).toString()
+        Log.i("EXTRA_EMAIL", userEmail)
+        loggedEmail = session.getUserLoginEmail().toString()
 
         userDAO = UserDAO(this)
 
@@ -90,11 +101,6 @@ class PostsActivity : AppCompatActivity() {
 
     private fun initView() {
         setSupportActionBar(binding.toolbar)
-
-        //Save the email in the session
-        session = SessionManager(this)
-
-        isLogged= session.getUserLoginState()
 
         //Load all the post if a user is logged
         if(isLogged){
@@ -120,6 +126,7 @@ class PostsActivity : AppCompatActivity() {
         builder
             .setTitle("Add a new Post")
             .setView(bindingAlert.root)
+            .setPositiveButton("Add", null)
             .setPositiveButton("Add") { _, _ ->
                 val postTitle:String = titleEditText.text.toString()
                 val postBody:String = bodyEditText.text.toString()
@@ -129,7 +136,24 @@ class PostsActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
 
-        builder.show()
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+
+        // Need to move listener after show dialog to prevent dismiss
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val postTitle:String = titleEditText.text.toString()
+            val postBody:String = bodyEditText.text.toString()
+            val postTags:String = tagsEditText.text.toString()
+
+            if (postTitle.isNotEmpty() && postBody.isNotEmpty() && postTags.isNotEmpty()){
+                newPost(postTitle,postBody,postTags)
+                refreshData()
+                Toast.makeText(this, "New post added!", Toast.LENGTH_SHORT).show()
+                alertDialog.dismiss()
+            }else{
+                Toast.makeText(this, "No new post was added!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun refreshData() {
@@ -138,11 +162,8 @@ class PostsActivity : AppCompatActivity() {
     }
 
     private fun newPost(postTitle: String, postBody: String, postTags: String) {
-        //Get the email from MainActivity
-        email = intent.getStringExtra(EXTRA_EMAIL)
-
         //Get the user from the DB
-        val emailUser:User? = userDAO.find(email)
+        val emailUser:User? = userDAO.find(loggedEmail)
 
         //Get the current Date
         val date:Long = getCurrentDate()
@@ -151,7 +172,8 @@ class PostsActivity : AppCompatActivity() {
         val reactions:Int = Random.nextInt(1,100)
 
         //Save the new Post in the DB
-        val newPost:Post = Post(-1,postTitle, postBody, )
+        newPost = Post(-1,postTitle, postBody, emailUser!!.id, postTags, reactions, date)
+        postDAO.insert(newPost)
     }
 
     private fun onItemClickListener(it: Int) {
@@ -199,6 +221,7 @@ class PostsActivity : AppCompatActivity() {
                     Log.i("HTTP", "Respuesta correcta :)")
                     postItemResponseList = response.body()?.posts.orEmpty()
                     fillDatabase(postItemResponseList)
+                    loadData()
                 } else {
                     postItemResponseList = listOf()
                     Log.i("HTTP", "respuesta erronea :(")
@@ -240,7 +263,7 @@ class PostsActivity : AppCompatActivity() {
                     if(postDAO.find(1) == null){
                         fetchData()
                     }
-                    loadData()
+                    refreshData()
                     Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
                 }
             }
