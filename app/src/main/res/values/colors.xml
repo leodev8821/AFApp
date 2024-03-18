@@ -18,7 +18,8 @@
     <color name="overWeight1">#F67A7A</color>
     <color name="overWeight2">#F65555</color>
     <color name="overWeight3">#FD2323</color>
-    <color name="overWeight4">#FF0000</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#0FB739</color>
 
     <color name="card_title_background">#808C8C8C</color>
     <color name="grey">#8C8C8C</color>

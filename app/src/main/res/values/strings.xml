@@ -6,4 +6,7 @@
     <!-- For PostActivity -->
     <string name="empty_posts">No discussion to show</string>
     <string name="empty_posts_advice">Press Refresh button on menu to load all posts</string>
+
+    <!-- For ItemPost -->
+    <string name="tags">Tags:</string>
 </resources>

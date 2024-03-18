@@ -46,10 +46,10 @@ class PostViewHolder(
 
         binding.titleItemTextView.text = post.title
         binding.bodyItemTextView.text = post.body
-        binding.tagsItemTextView.text = post.tags
-        binding.userItemTextView.text = post.userPost.toString()
-        binding.reactionsItemTextView.text = post.reactions.toString()
-        binding.dateItemtextView.text = dateFormat
+        binding.tagsItemTextView.text = "Tags: ${post.tags}"
+        binding.userItemTextView.text = "Created by: ${post.userPost}"
+        binding.reactionsItemTextView.text = "Reactions: ${post.reactions}"
+        binding.dateItemtextView.text = "Created at: $dateFormat"
     }
 
 }
