@@ -40,7 +40,6 @@ class PostsActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_EMAIL = "EMAIL"
     }
-    private var userEmail:String = ""
 
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingAlert:NewPostAlertDialogBinding
@@ -68,29 +67,41 @@ class PostsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initView()
+
+    }
+
+    private fun initView() {
         binding = ActivityPostsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userDAO = UserDAO(this)
+        postDAO = PostDAO(this)
+
         progress = binding.progress
-        recyclerView = binding.recyclerView
         emptyPlaceholder = binding.emptyPlaceholder
         newPostButton = binding.newPostFloatingActionButton
+
+        //Save the email in the session
+        session = SessionManager(this)
+        isLogged= session.getUserLoginState()
+        loggedEmail = session.getUserLoginEmail().toString()
+
+        Log.i("LOGGED_EMAIL", loggedEmail)
+
+        postList = postDAO.findAll()
+        adapter = PostAdapter(postList, loggedEmail) {
+            onItemClickListener(it)
+        }
+        recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
 
         bindingItemPost = ItemPostBinding.inflate(layoutInflater)
         reactFAB = bindingItemPost.reactFAB
 
-        //Save the email in the session
-        session = SessionManager(this)
-
-        isLogged= session.getUserLoginState()
-        userEmail = intent.getStringExtra(EXTRA_EMAIL).toString()
-        loggedEmail = session.getUserLoginEmail().toString()
-
-        userDAO = UserDAO(this)
-
         //If Post is empty, no data is showed
-        postDAO = PostDAO(this)
-
         if(postDAO.find(1) == null){
             progress.visibility = View.GONE
             recyclerView.visibility = View.GONE
@@ -100,11 +111,6 @@ class PostsActivity : AppCompatActivity() {
             loadData()
         }
 
-        initView()
-
-    }
-
-    private fun initView() {
         setSupportActionBar(binding.toolbar)
 
         //Load all the post if a user is logged
@@ -121,11 +127,30 @@ class PostsActivity : AppCompatActivity() {
         }
     }
 
+    //Load the RecyclerView with data from DB
+    private fun loadData(){
+        postList = postDAO.findAll()
+        progress.visibility = View.VISIBLE
+
+        if (postDAO.find(1) != null) {
+            recyclerView.visibility = View.VISIBLE
+            emptyPlaceholder.visibility = View.GONE
+            progress.visibility = View.GONE
+            adapter.updateItems(postList)
+        } else {
+            recyclerView.visibility = View.GONE
+            emptyPlaceholder.visibility = View.VISIBLE
+        }
+    }
+
     private fun react() {
         val react:String = bindingItemPost.reactionsItemTextView.text.toString()
         Toast.makeText(this, "Ha presionado el boton React: $react!", Toast.LENGTH_LONG).show()
     }
 
+    /*
+    * AlertDialog to create a new post
+     */
     private fun newPostAlert() {
         //Inflate the AlertDialog layout
         bindingAlert = NewPostAlertDialogBinding.inflate(layoutInflater)
@@ -141,13 +166,6 @@ class PostsActivity : AppCompatActivity() {
             .setTitle("Add a new Post")
             .setView(bindingAlert.root)
             .setPositiveButton("Add", null)
-            .setPositiveButton("Add") { _, _ ->
-                val postTitle:String = titleEditText.text.toString()
-                val postBody:String = bodyEditText.text.toString()
-                val postTags:String = tagsEditText.text.toString()
-                newPost(postTitle,postBody,postTags)
-                refreshRecyclerView()
-            }
             .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
 
         val alertDialog: AlertDialog = builder.create()
@@ -161,7 +179,7 @@ class PostsActivity : AppCompatActivity() {
 
             if (postTitle.isNotEmpty() && postBody.isNotEmpty() && postTags.isNotEmpty()){
                 newPost(postTitle,postBody,postTags)
-                refreshRecyclerView()
+                loadData()
                 Toast.makeText(this, "New post added!", Toast.LENGTH_SHORT).show()
                 alertDialog.dismiss()
             }else{
@@ -170,6 +188,9 @@ class PostsActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    * Method to create a new post into DB
+     */
     private fun newPost(postTitle: String, postBody: String, postTags: String) {
         //Get the user from the DB
         val emailUser:User? = userDAO.find(loggedEmail)
@@ -185,57 +206,25 @@ class PostsActivity : AppCompatActivity() {
         postDAO.insert(newPost)
     }
 
-
-    private fun refreshRecyclerView() {
-        postList = postDAO.findAll()
-        adapter.updateItems(postList)
-    }
-
-    //Load the RecyclerView with data from DB
-    private fun loadData(){
-        postList = postDAO.findAll()
-        adapter = PostAdapter(postList) {
-            onItemClickListener(it)
-        }
-
-        val recycler:RecyclerView = binding.recyclerView
-        recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = adapter
-
-        progress.visibility = View.VISIBLE
-
-
-        if (postDAO.find(1) != null) {
-            recycler.visibility = View.VISIBLE
-            emptyPlaceholder.visibility = View.GONE
-            progress.visibility = View.GONE
-            adapter.updateItems(postDAO.findAll())
-        } else {
-            recycler.visibility = View.GONE
-            emptyPlaceholder.visibility = View.VISIBLE
-        }
-    }
-
     private fun onItemClickListener(position: Int) {
         val post:Post = postList[position]
-
-        showPostAlert(post.title, post.body, post.reactions, post.userPost, position)
+        showPostAlert(post.title, post.body, post.reactions, post.userPost, post.id, position)
 
     }
 
-    private fun showPostAlert(title: String, body: String, reactions: Int, userPost:Int, position: Int) {
+    private fun showPostAlert(title: String, body: String, reactions: Int, userPost:Int, postId: Int, position:Int) {
         val user: User? = userDAO.findById(userPost)
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder
             .setTitle(title)
             .setMessage(
                 "Body: $body "+
-                        "\nReactions: $reactions "
+                "\nReactions: $reactions "
             )
         if (user != null) {
             if(session.getUserLoginEmail() == user.email){
                 builder.setPositiveButton("Delete") { _, _ -> deletePost(position)}
-                builder.setNeutralButton("Edit") {_, _ -> editPost(position)}
+                builder.setNeutralButton("Edit") {_, _ -> editPost(postId)}
                 builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
 
                 val dialog: AlertDialog = builder.create()
@@ -246,18 +235,69 @@ class PostsActivity : AppCompatActivity() {
                 dialog.show()
             }
         } else{
-            Toast.makeText(this, "Editar Post de la position $position", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Editar Post de la position $postId", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun editPost(position: Int) {
-        Toast.makeText(this, "Editar Post de la position $position", Toast.LENGTH_LONG).show()
+    private fun editPost(postId: Int) {
+        val post: Post? = postDAO.find(postId)
+
+        //Inflate the AlertDialog layout
+        bindingAlert = NewPostAlertDialogBinding.inflate(layoutInflater)
+
+        //EditText from AlertDialog layout
+        val titleEditText:EditText = bindingAlert.titleTextField.editText!!
+        val bodyEditText:EditText = bindingAlert.bodyTextField.editText!!
+        val tagsEditText:EditText = bindingAlert.tagsEditText.editText!!
+
+        //Set the fields EditText with data from DB
+        if (post != null) {
+            titleEditText.setText(post.title)
+            bodyEditText.setText(post.body)
+            tagsEditText.setText(post.tags)
+            Log.i("POST","${post.title}, ${post.tags}")
+
+            //Create AlertDialog
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder
+                .setTitle("Edit Post ${post.title}")
+                .setView(bindingAlert.root)
+                .setPositiveButton("Edit", null)
+                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+
+            // Need to move listener after show dialog to prevent dismiss
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val postTitle:String = titleEditText.text.toString()
+                val postBody:String = bodyEditText.text.toString()
+                val postTags:String = tagsEditText.text.toString()
+
+                if (postTitle.isNotEmpty() && postBody.isNotEmpty() && postTags.isNotEmpty()){
+                    post.title = postTitle
+                    post.body = postBody
+                    post.tags = postTags
+                    post.date = getCurrentDate()
+                    Log.i("POST UPDATED","${post.title}, ${post.tags}")
+                    postDAO.update(post)
+                    adapter.notifyItemChanged(postId)
+                    loadData()
+                    Toast.makeText(this, "Successful post edited!", Toast.LENGTH_SHORT).show()
+                    alertDialog.dismiss()
+                }else{
+                    Toast.makeText(this, "Unsuccessful post edited!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }else{
+            Toast.makeText(this, "Post Error. This post doesn't exist!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun deletePost(position:Int){
         val post:Post = postList[position]
         postDAO.delete(post)
-        refreshRecyclerView()
+        loadData()
         Toast.makeText(this, "El post ${post.title} ha sido borrado!", Toast.LENGTH_LONG).show()
     }
 
@@ -321,7 +361,7 @@ class PostsActivity : AppCompatActivity() {
                     if(postDAO.find(1) == null){
                         fetchData()
                     }
-                    refreshRecyclerView()
+                    loadData()
                     Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
                 }
             }

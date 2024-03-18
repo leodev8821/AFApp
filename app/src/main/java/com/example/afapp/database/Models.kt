@@ -67,7 +67,7 @@ class PostModel {
             COLUMN_DATE,
         )
 
-        val SORT_ORDER = "$COLUMN_NAME_ID DESC"
+        val SORT_ORDER = "$COLUMN_DATE DESC"
 
         const val SQL_CREATE_TABLE_POST =
             "CREATE TABLE $TABLE_NAME (" +
