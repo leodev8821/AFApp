@@ -37,10 +37,6 @@ import kotlin.random.Random
 
 class PostsActivity : AppCompatActivity() {
 
-    companion object {
-        const val EXTRA_EMAIL = "EMAIL"
-    }
-
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingAlert:NewPostAlertDialogBinding
     private lateinit var bindingItemPost:ItemPostBinding
@@ -123,7 +119,8 @@ class PostsActivity : AppCompatActivity() {
         }
 
         reactFAB.setOnClickListener {
-            react()
+            Toast.makeText(this, "Ha presionado el boton React!", Toast.LENGTH_LONG).show()
+
         }
     }
 
@@ -141,11 +138,6 @@ class PostsActivity : AppCompatActivity() {
             recyclerView.visibility = View.GONE
             emptyPlaceholder.visibility = View.VISIBLE
         }
-    }
-
-    private fun react() {
-        val react:String = bindingItemPost.reactionsItemTextView.text.toString()
-        Toast.makeText(this, "Ha presionado el boton React: $react!", Toast.LENGTH_LONG).show()
     }
 
     /*

@@ -147,4 +147,40 @@ class PostDAO (context: Context) {
         return list
 
     }
+
+    @SuppressLint("Range")
+    fun findByTitle(title:String): Post? {
+
+        val db = dbManager.writableDatabase
+
+        val cursor = db.query(
+            PostModel.PostTable.TABLE_NAME,                         // The Table to query
+            PostModel.PostTable.COLUMN_NAMES,                        // The array of columns to return (pass null to get all)
+            "${PostModel.PostTable.COLUMN_TITLE} = $title",   // The columns for the WHERE clause
+            null,                                      // The values for the WHERE clause
+            null,                                          // don't group the rows
+            null,                                           // don't filter by row groups
+            null                                           // The sort order
+        )
+
+        var post: Post? = null
+
+        if (cursor.moveToNext()){
+            val postId = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_NAME_ID))
+            val postTitle = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_TITLE))
+            val postBody = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_BODY))
+            val postUserId = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_USER_POST))
+            val postTags = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_TAGS))
+            val postReactions = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_REACTIONS))
+            val postDate = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_DATE)).toLong()
+
+            // Every post is added to a list
+            post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate)
+        }
+        cursor.close()
+        db.close()
+
+        return post
+
+    }
 }

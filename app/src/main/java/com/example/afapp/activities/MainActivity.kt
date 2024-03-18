@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity() {
                 session.setUserLoginState(true)
                 session.setUserLoginEmail(email)
                 val intent = Intent(this, PostsActivity::class.java)
-                intent.putExtra(PostsActivity.EXTRA_EMAIL, email)
                 startActivity(intent)
             }
             else{

@@ -85,6 +85,7 @@
                 app:rippleColor="@color/green"
                 android:clickable="true"
                 android:elevation="6dp"
+                android:layout_margin="5dp"
                 android:layout_gravity="end|bottom"
                 android:background="@drawable/button_selector"
                 android:src="@drawable/favorite_svg"
