@@ -50,7 +50,6 @@ class PostViewHolder(
         post:Post,
         user:String,
     ){
-        val context: Context = itemView.context
         val dateFormat = DateFormat.format("dd-MMMM-yyyy", post.date)
 
         binding.titleItemTextView.text = post.title
@@ -59,6 +58,13 @@ class PostViewHolder(
         binding.userItemTextView.text = "Created by: $user"
         binding.reactionsItemTextView.text = "Reactions: ${post.reactions}"
         binding.dateItemtextView.text = "Created at: $dateFormat"
+
+        val favDrawableId = if (post.like) {
+            R.drawable.heart_selected
+        } else {
+            R.drawable.heart_unselected
+        }
+        binding.reactFAB.setImageResource(favDrawableId)
     }
 
 }

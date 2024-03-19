@@ -55,6 +55,7 @@ class PostModel {
         const val COLUMN_TAGS = "Tags"
         const val COLUMN_REACTIONS = "Reactions"
         const val COLUMN_DATE = "Date"
+        const val COLUMN_LIKE = "Like"
         const val TABLE_USER = UserTable.COLUMN_NAME_ID
 
         val COLUMN_NAMES = arrayOf(
@@ -65,6 +66,7 @@ class PostModel {
             COLUMN_TAGS,
             COLUMN_REACTIONS,
             COLUMN_DATE,
+            COLUMN_LIKE,
         )
 
         val SORT_ORDER = "$COLUMN_DATE DESC"
@@ -78,6 +80,7 @@ class PostModel {
                     "$COLUMN_TAGS TEXT, " +
                     "$COLUMN_REACTIONS INTEGER, " +
                     "$COLUMN_DATE INTEGER, " +
+                    "$COLUMN_LIKE BOOLEAN NOT NULL, " +
                     "FOREIGN KEY ($COLUMN_USER_POST)"+
                     "REFERENCES ${UserTable.TABLE_NAME} ($TABLE_USER) ON DELETE CASCADE);"
 

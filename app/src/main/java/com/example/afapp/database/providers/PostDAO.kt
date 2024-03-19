@@ -26,6 +26,7 @@ class PostDAO (context: Context) {
             put(PostModel.PostTable.COLUMN_TAGS, post.tags)
             put(PostModel.PostTable.COLUMN_REACTIONS, post.reactions)
             put(PostModel.PostTable.COLUMN_DATE, post.date)
+            put(PostModel.PostTable.COLUMN_LIKE, post.like)
         }
 
         // Insert the new row, returning the primary key value of the new row
@@ -51,6 +52,7 @@ class PostDAO (context: Context) {
             put(PostModel.PostTable.COLUMN_TAGS, post.tags)
             put(PostModel.PostTable.COLUMN_REACTIONS, post.reactions)
             put(PostModel.PostTable.COLUMN_DATE, post.date)
+            put(PostModel.PostTable.COLUMN_LIKE, post.like)
         }
 
         val updatedRows = db.update(PostModel.PostTable.TABLE_NAME, values, "${PostModel.PostTable.COLUMN_NAME_ID} = ${post.id}", null)
@@ -60,7 +62,8 @@ class PostDAO (context: Context) {
                 "\nUserId: ${post.userPost}, " +
                 "\nTags: ${post.tags}, " +
                 "\nReactions: ${post.reactions} " +
-                "\nDate: ${post.date}"
+                "\nDate: ${post.date}" +
+                "\nLike: ${post.like}"
         )
 
         db.close()
@@ -100,9 +103,10 @@ class PostDAO (context: Context) {
             val postTags = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_TAGS))
             val postReactions = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_REACTIONS))
             val postDate = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_DATE)).toLong()
+            val postLike = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_LIKE)) == 1
 
             // Every post is added to a list
-            post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate)
+            post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate, postLike)
         }
         cursor.close()
         db.close()
@@ -136,9 +140,10 @@ class PostDAO (context: Context) {
             val postTags = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_TAGS))
             val postReactions = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_REACTIONS))
             val postDate = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_DATE)).toLong()
+            val postLike = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_LIKE)) == 1
 
             // Every post is added to a list
-            val post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate)
+            val post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate, postLike)
             list.add(post)
         }
         cursor.close()
@@ -173,9 +178,10 @@ class PostDAO (context: Context) {
             val postTags = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_TAGS))
             val postReactions = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_REACTIONS))
             val postDate = cursor.getString(cursor.getColumnIndex(PostModel.PostTable.COLUMN_DATE)).toLong()
+            val postLike = cursor.getInt(cursor.getColumnIndex(PostModel.PostTable.COLUMN_LIKE)) == 1
 
             // Every post is added to a list
-            post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate)
+            post = Post(postId, postTitle, postBody, postUserId, postTags, postReactions, postDate, postLike)
         }
         cursor.close()
         db.close()

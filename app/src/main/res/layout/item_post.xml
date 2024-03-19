@@ -82,13 +82,13 @@
                 android:id="@+id/reactFAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:rippleColor="#F63F55"
+                app:rippleColor="@color/red"
+                app:tint="@color/red"
                 android:clickable="true"
                 android:elevation="6dp"
                 android:layout_margin="5dp"
                 android:layout_gravity="end|bottom"
-                android:src="@drawable/favorite_svg"
-                style="?attr/floatingActionButtonSmallStyle" />
+                android:src="@drawable/heart_unselected"/>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

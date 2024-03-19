@@ -41,8 +41,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:selectAllOnFocus="true"
-                android:hint="Email"
-                android:text="jaime@afapp.com"/>
+                android:hint="Email"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -57,8 +56,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:selectAllOnFocus="true"
-                android:hint="Password"
-                android:text="asdf1234"/>
+                android:hint="Password"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

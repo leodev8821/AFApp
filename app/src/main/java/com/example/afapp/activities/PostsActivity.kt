@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -40,7 +39,7 @@ class PostsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingAlert:NewPostAlertDialogBinding
-    private lateinit var bindingItemPost: ItemPostBinding
+    //private lateinit var bindingItemPost: ItemPostBinding
 
     private lateinit var progress:FrameLayout
     private lateinit var recyclerView:RecyclerView
@@ -187,41 +186,33 @@ class PostsActivity : AppCompatActivity() {
         val reactions:Int = Random.nextInt(1,100)
 
         //Save the new Post in the DB
-        newPost = Post(-1,postTitle, postBody, emailUser!!.id, postTags, reactions, date)
+        newPost = Post(-1,postTitle, postBody, emailUser!!.id, postTags, reactions, date, false)
         postDAO.insert(newPost)
     }
 
     private fun onReactFABListener(position: Int){
-        var reactFAB:Boolean
-        reactFAB = true
         val post:Post = postList[position]
+        val like:Boolean = !post.like
         val reaction:Int
 
-        if(reactFAB){
+        if(like){
             reaction = 1
-            reactionsController(post,reactFAB, reaction, position)
-            Toast.makeText(this, "Like +1", Toast.LENGTH_LONG).show()
+            reactionsController(post,like, reaction, position)
+            Toast.makeText(this, "Like +1", Toast.LENGTH_SHORT).show()
         }else{
             reaction = -1
-            reactionsController(post,reactFAB, reaction, position)
-            Toast.makeText(this, "Unlike -1", Toast.LENGTH_LONG).show()
+            reactionsController(post,like, reaction, position)
+            Toast.makeText(this, "Unlike -1", Toast.LENGTH_SHORT).show()
         }
         loadData()
     }
 
-    private fun reactionsController(post:Post,reactFAB:Boolean, reaction:Int, position: Int){
-        bindingItemPost = ItemPostBinding.inflate(layoutInflater)
+    private fun reactionsController(post:Post, like:Boolean, reaction:Int, position: Int){
         val postReaction:Int = post.reactions
         post.reactions = postReaction + reaction
+        post.like = like
         postDAO.update(post)
         adapter.notifyItemChanged(position)
-
-        val favDrawableId = if (reactFAB) {
-            R.drawable.heart_selected
-        } else {
-            R.drawable.favorite_svg
-        }
-        bindingItemPost.reactFAB.setImageResource(favDrawableId)
     }
 
     private fun onPostClickListener(position: Int) {
@@ -355,7 +346,7 @@ class PostsActivity : AppCompatActivity() {
             for (tag in post.tags){
                 tags += "$tag, "
             }
-            val newPost = Post(-1, post.title, post.body, 1, tags, post.reactions, date)
+            val newPost = Post(-1, post.title, post.body, 1, tags, post.reactions, date, false)
             postDAO.insert(newPost)
             Log.i("DATABASE","New post from API added, ${post.title}")
         }
