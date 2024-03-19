@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">AnotherForumApp</string>
 
-    <string name="toastAbout">Created by LeoDev </string>
-
     <!-- Main Activity -->
     <string name="loginTitleTextView">Login</string>
     <string name="emailTextField" translatable="false">Email</string>
@@ -39,5 +37,31 @@
     <string name="opt1">Refresh</string>
     <string name="opt2">Logout</string>
     <string name="opt3">About</string>
+
+    <!-- For Toast Messages -->
+    <string name="newPostTM">New post added!</string>
+    <string name="noNewPostTM">No new post was added!</string>
+    <string name="likePostTM">Like</string>
+    <string name="unlikePostTM">Unlike</string>
+    <string name="editPostTM">Edit Post from position </string>
+    <string name="successPostTM">Successful post edited!</string>
+    <string name="unsuccessPostTM">Unsuccessful post edited!</string>
+    <string name="errorPostTM">Post Error. This post doesn\'t exist!"</string>
+    <string name="erasedPostTM">The post has been erased!"</string>
+    <string name="updatingPostTM">Updating Database…"</string>
+    <string name="logoutPostTM">You have logged out"</string>
+    <string name="toastAbout">Created by LeoDev </string>
+
+    <!-- For AlertDialog -->
+    <string name="exitTitleAD">Logout</string>
+    <string name="exitMsgAD">You are about to log out, are you sure?</string>
+    <string name="positiveButtonAD">Yes</string>
+    <string name="negativeButtonAD">No</string>
+    <string name="editButtonAD">Edit</string>
+    <string name="cancelButtonAD">Cancel</string>
+    <string name="deleteButtonAD">Delete</string>
+    <string name="addButtonAD">Add</string>
+    <string name="editTitleAD">Edit Post</string>
+    <string name="addNewPostTitleAD">Add new Post</string>
 
 </resources>

@@ -2,7 +2,6 @@ package com.example.afapp.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.R
@@ -28,12 +26,10 @@ import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ActivityPostsBinding
 import com.example.afapp.database.utils.RetrofitProvider
 import com.example.afapp.database.utils.SessionManager
-import com.example.afapp.databinding.ItemPostBinding
 import com.example.afapp.databinding.NewPostAlertDialogBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.random.Random
@@ -42,7 +38,6 @@ class PostsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingAlert:NewPostAlertDialogBinding
-    //private lateinit var bindingItemPost: ItemPostBinding
 
     private lateinit var progress:FrameLayout
     private lateinit var recyclerView:RecyclerView
@@ -84,8 +79,6 @@ class PostsActivity : AppCompatActivity() {
         session = SessionManager(this)
         isLogged= session.getUserLoginState()
         loggedEmail = session.getUserLoginEmail().toString()
-
-        Log.i("LOGGED_EMAIL", loggedEmail)
 
         postList = postDAO.findAll()
         adapter = PostAdapter(postList, loggedEmail,{
@@ -150,10 +143,10 @@ class PostsActivity : AppCompatActivity() {
         //Create AlertDialog
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder
-            .setTitle("Add a new Post")
+            .setTitle(R.string.addNewPostTitleAD)
             .setView(bindingAlert.root)
-            .setPositiveButton("Add", null)
-            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
+            .setPositiveButton(R.string.addButtonAD, null)
+            .setNegativeButton(R.string.cancelButtonAD) { dialog, _ -> dialog.dismiss()}
 
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
@@ -167,10 +160,10 @@ class PostsActivity : AppCompatActivity() {
             if (postTitle.isNotEmpty() && postBody.isNotEmpty() && postTags.isNotEmpty()){
                 newPost(postTitle,postBody,postTags)
                 loadData()
-                Toast.makeText(this, "New post added!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.newPostTM, Toast.LENGTH_SHORT).show()
                 alertDialog.dismiss()
             }else{
-                Toast.makeText(this, "No new post was added!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.noNewPostTM, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -201,11 +194,11 @@ class PostsActivity : AppCompatActivity() {
         if(like){
             reaction = 1
             reactionsController(post,like, reaction, position)
-            Toast.makeText(this, "Like", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,R.string.likePostTM, Toast.LENGTH_SHORT).show()
         }else{
             reaction = -1
             reactionsController(post,like, reaction, position)
-            Toast.makeText(this, "Unlike", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.unlikePostTM, Toast.LENGTH_SHORT).show()
         }
         loadData()
     }
@@ -234,9 +227,9 @@ class PostsActivity : AppCompatActivity() {
             )
         if (user != null) {
             if(session.getUserLoginEmail() == user.email){
-                builder.setPositiveButton("Delete") { _, _ -> deletePost(position)}
-                builder.setNeutralButton("Edit") {_, _ -> editPost(postId)}
-                builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
+                builder.setPositiveButton(R.string.deleteButtonAD) { _, _ -> deletePost(position)}
+                builder.setNeutralButton(R.string.editButtonAD) {_, _ -> editPost(postId)}
+                builder.setNegativeButton(R.string.cancelButtonAD) { dialog, _ -> dialog.dismiss()}
 
                 val dialog: AlertDialog = builder.create()
                 dialog.show()
@@ -246,7 +239,7 @@ class PostsActivity : AppCompatActivity() {
                 dialog.show()
             }
         } else{
-            Toast.makeText(this, "Editar Post de la position $postId", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.editPostTM, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -271,10 +264,10 @@ class PostsActivity : AppCompatActivity() {
             //Create AlertDialog
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder
-                .setTitle("Edit Post ${post.title}")
+                .setTitle(R.string.editTitleAD)
                 .setView(bindingAlert.root)
-                .setPositiveButton("Edit", null)
-                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
+                .setPositiveButton(R.string.editButtonAD, null)
+                .setNegativeButton(R.string.cancelButtonAD) { dialog, _ -> dialog.dismiss()}
 
             val alertDialog: AlertDialog = builder.create()
             alertDialog.show()
@@ -294,14 +287,14 @@ class PostsActivity : AppCompatActivity() {
                     postDAO.update(post)
                     adapter.notifyItemChanged(postId)
                     loadData()
-                    Toast.makeText(this, "Successful post edited!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.successPostTM, Toast.LENGTH_SHORT).show()
                     alertDialog.dismiss()
                 }else{
-                    Toast.makeText(this, "Unsuccessful post edited!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.unsuccessPostTM, Toast.LENGTH_SHORT).show()
                 }
             }
         }else{
-            Toast.makeText(this, "Post Error. This post doesn't exist!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.errorPostTM, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -309,7 +302,7 @@ class PostsActivity : AppCompatActivity() {
         val post:Post = postList[position]
         postDAO.delete(post)
         loadData()
-        Toast.makeText(this, "El post ${post.title} ha sido borrado!", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, R.string.erasedPostTM, Toast.LENGTH_LONG).show()
     }
 
     // Fetch data from the API and fill the DB
@@ -373,7 +366,7 @@ class PostsActivity : AppCompatActivity() {
                         fetchData()
                     }
                     loadData()
-                    Toast.makeText(this, "Actualizando Base de Datos", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.updatingPostTM, Toast.LENGTH_LONG).show()
                 }
             }
             //Logout option
@@ -385,11 +378,11 @@ class PostsActivity : AppCompatActivity() {
                 finish()
                 startActivity(intent)
 
-                Toast.makeText(this, "Has cerrado sesión", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.logoutPostTM, Toast.LENGTH_LONG).show()
             }
             //About option
             aboutOpt ->{
-                Toast.makeText(this, getString(R.string.toastAbout), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toastAbout, Toast.LENGTH_LONG).show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -414,13 +407,13 @@ class PostsActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder
             .setIcon(R.drawable.caution_svg)
-            .setTitle("Cerrar Sesión")
-            .setMessage("Esta seguro de que desea cerrar la sesión?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(R.string.exitTitleAD)
+            .setMessage(R.string.exitMsgAD)
+            .setPositiveButton(R.string.positiveButtonAD) { _, _ ->
                 isLogged = !isLogged
                 session.setUserLoginState(isLogged)
                 finish() }
-            .setNegativeButton("No") { dialog, _ -> dialog?.cancel() }
+            .setNegativeButton(R.string.negativeButtonAD) { dialog, _ -> dialog?.cancel() }
 
         val dialog: AlertDialog = builder.create()
         dialog.show()
