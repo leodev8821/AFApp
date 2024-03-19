@@ -30,7 +30,7 @@ class PostModel {
             COLUMN_PASSWORD,
         )
 
-        val SORT_ORDER = "$COLUMN_NAME_ID ASC"
+        const val SORT_ORDER = "$COLUMN_NAME_ID ASC"
 
         const val SQL_CREATE_TABLE_USER =
             "CREATE TABLE $TABLE_NAME (" +
@@ -56,7 +56,7 @@ class PostModel {
         const val COLUMN_REACTIONS = "Reactions"
         const val COLUMN_DATE = "Date"
         const val COLUMN_LIKE = "Like"
-        const val TABLE_USER = UserTable.COLUMN_NAME_ID
+        private const val TABLE_USER = UserTable.COLUMN_NAME_ID
 
         val COLUMN_NAMES = arrayOf(
             COLUMN_NAME_ID,
@@ -69,7 +69,7 @@ class PostModel {
             COLUMN_LIKE,
         )
 
-        val SORT_ORDER = "$COLUMN_DATE DESC"
+        const val SORT_ORDER = "$COLUMN_DATE DESC"
 
         const val SQL_CREATE_TABLE_POST =
             "CREATE TABLE $TABLE_NAME (" +

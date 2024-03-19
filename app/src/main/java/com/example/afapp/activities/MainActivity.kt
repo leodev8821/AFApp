@@ -13,8 +13,6 @@ import com.example.afapp.database.User
 import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.database.utils.SessionManager
 import com.example.afapp.databinding.ActivityMainBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputLayout
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,10 +55,6 @@ class MainActivity : AppCompatActivity() {
         initView()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun initView() {
 
         // LOGIN BUTTON
@@ -75,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             else{
-                Toast.makeText(this, "Datos incorrectos!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.loginTM, Toast.LENGTH_LONG).show()
             }
 
         }
@@ -85,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 
             if(emailEditText.text?.isNotEmpty() == true){
                 val email:String = emailEditText.text.toString()
-
                 val intent = Intent(this, UserRegisterActivity::class.java)
                 intent.putExtra(UserRegisterActivity.EXTRA_EMAIL, email)
                 startActivity(intent)
@@ -114,6 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // TO SHOW A CONFIRM EXIT DIALOG
+    @Deprecated("Deprecated in Java")
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         //super.onBackPressed()
@@ -124,10 +118,10 @@ class MainActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder
             .setIcon(R.drawable.caution_svg)
-            .setTitle("Cerrar aplicación")
-            .setMessage("Esta seguro de que quiere salir de la aplicación?")
-            .setPositiveButton("Salir") { _, _ -> finish() }
-            .setNegativeButton("No") { dialog, _ -> dialog?.cancel() }
+            .setTitle(R.string.exitTitleAD)
+            .setMessage(R.string.exitMsgAD)
+            .setPositiveButton(R.string.positiveButtonAD) { _, _ -> finish() }
+            .setNegativeButton(R.string.negativeButtonAD) { dialog, _ -> dialog?.cancel() }
 
         val dialog: AlertDialog = builder.create()
         dialog.show()

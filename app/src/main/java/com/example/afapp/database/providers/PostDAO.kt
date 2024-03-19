@@ -6,7 +6,6 @@ import android.content.Context
 import android.util.Log
 import com.example.afapp.database.Post
 import com.example.afapp.database.PostModel
-import com.example.afapp.database.User
 import com.example.afapp.database.utils.DBManager
 
 class PostDAO (context: Context) {

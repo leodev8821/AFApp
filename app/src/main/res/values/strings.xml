@@ -3,7 +3,7 @@
 
     <!-- Main Activity -->
     <string name="loginTitleTextView">Login</string>
-    <string name="emailTextField" translatable="false">Email</string>
+    <string name="emailTextField">Email</string>
     <string name="passwordTextField">Password</string>
     <string name="loginButton">Login</string>
     <string name="registerButton">Register</string>
@@ -20,7 +20,7 @@
     <string name="dateItemTextView">Created at: </string>
 
     <!-- For Activity_User_Register -->
-    <string name="emailTF" translatable="false">Email</string>
+    <string name="emailTF">Email</string>
     <string name="nameTF">Name</string>
     <string name="lastnameTF">Lastname</string>
     <string name="pass1TF">Enter password</string>
@@ -51,6 +51,7 @@
     <string name="updatingPostTM">Updating Database…"</string>
     <string name="logoutPostTM">You have logged out"</string>
     <string name="toastAbout">Created by LeoDev </string>
+    <string name="loginTM">Wrong data!</string>
 
     <!-- For AlertDialog -->
     <string name="exitTitleAD">Logout</string>
@@ -64,4 +65,9 @@
     <string name="editTitleAD">Edit Post</string>
     <string name="addNewPostTitleAD">Add new Post</string>
 
+    <!-- For PostAdapter -->
+    <string name="tagsTV">Tags: %s</string>
+    <string name="userTV">Created By: %s</string>
+    <string name="reactionTV">Reactions: %d</string>
+    <string name="dateTV">Created at: %s</string>
 </resources>

@@ -193,17 +193,17 @@ class PostsActivity : AppCompatActivity() {
 
         if(like){
             reaction = 1
-            reactionsController(post,like, reaction, position)
+            reactionsController(post,true, reaction)
             Toast.makeText(this,R.string.likePostTM, Toast.LENGTH_SHORT).show()
         }else{
             reaction = -1
-            reactionsController(post,like, reaction, position)
+            reactionsController(post,false, reaction)
             Toast.makeText(this, R.string.unlikePostTM, Toast.LENGTH_SHORT).show()
         }
         loadData()
     }
 
-    private fun reactionsController(post:Post, like:Boolean, reaction:Int, position: Int){
+    private fun reactionsController(post:Post, like:Boolean, reaction:Int){
         val postReaction:Int = post.reactions
         post.reactions = postReaction + reaction
         post.like = like
@@ -212,19 +212,18 @@ class PostsActivity : AppCompatActivity() {
 
     private fun onPostClickListener(position: Int) {
         val post:Post = postList[position]
-        showPostAlert(post.title, post.body, post.reactions, post.userPost, post.id, position)
-
+        showPostAlert(post.title, post.body, post.userPost, post.id, position)
     }
 
-    private fun showPostAlert(title: String, body: String, reactions: Int, userPost:Int, postId: Int, position:Int) {
+    /*
+    * AlertDialog when a post is clicked
+    */
+    private fun showPostAlert(title: String, body: String, userPost:Int, postId: Int, position:Int) {
         val user: User? = userDAO.findById(userPost)
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder
             .setTitle(title)
-            .setMessage(
-                "Body: $body "+
-                "\nReactions: $reactions "
-            )
+            .setMessage(body)
         if (user != null) {
             if(session.getUserLoginEmail() == user.email){
                 builder.setPositiveButton(R.string.deleteButtonAD) { _, _ -> deletePost(position)}
@@ -234,7 +233,7 @@ class PostsActivity : AppCompatActivity() {
                 val dialog: AlertDialog = builder.create()
                 dialog.show()
             }else{
-                builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss()}
+                builder.setNegativeButton(R.string.cancelButtonAD) { dialog, _ -> dialog.dismiss()}
                 val dialog: AlertDialog = builder.create()
                 dialog.show()
             }
@@ -243,6 +242,9 @@ class PostsActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    * AlertDialog to edit a post
+    */
     private fun editPost(postId: Int) {
         val post: Post? = postDAO.find(postId)
 
@@ -320,13 +322,13 @@ class PostsActivity : AppCompatActivity() {
                 progress.visibility = View.GONE
 
                 if (response.body() != null) {
-                    Log.i("HTTP", "Respuesta correcta :)")
+                    Log.i("HTTP", "Correct answer! :)")
                     postItemResponseList = response.body()?.posts.orEmpty()
                     fillDatabase(postItemResponseList)
                     loadData()
                 } else {
                     postItemResponseList = listOf()
-                    Log.i("HTTP", "respuesta erronea :(")
+                    Log.i("HTTP", "Wrong answer! :(")
                 }
             }
         }
@@ -398,6 +400,7 @@ class PostsActivity : AppCompatActivity() {
     }
 
     // TO SHOW A CONFIRM EXIT DIALOG
+    @Deprecated("Deprecated in Java")
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         showExitDialog()

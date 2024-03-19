@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AnotherForumApp</string>
+    <string name="newPostTM">Nuevo post añadido!</string>
+    <string name="noNewPostTM">Ningun post añadido!</string>
+    <string name="likePostTM">Me gusta</string>
+    <string name="unlikePostTM">No me gusta</string>
+    <string name="editPostTM">"Editar el post de la posición "</string>
+    <string name="successPostTM">Post editado exitósamente!</string>
+    <string name="unsuccessPostTM">Post no editado exitósamente!</string>
+    <string name="errorPostTM">Error de Post. Este post no existe!</string>
+    <string name="erasedPostTM">El post ha sido borrado!</string>
+    <string name="updatingPostTM">Actualizando la Base de Datos...</string>
+    <string name="logoutPostTM">Has cerrado sesión</string>
     <string name="toastAbout">Creado por LeoDev</string>
     <string name="loginTitleTextView">Iniciar Sesión</string>
+    <string name="emailTextField">Correo electrónico</string>
     <string name="passwordTextField">Contraseña</string>
     <string name="loginButton">Iniciar Sesión</string>
     <string name="registerButton">Registrarse</string>
@@ -13,6 +25,7 @@
     <string name="userItemTextView">"Creado por: "</string>
     <string name="reactionsItemTextView">"Reacciones: "</string>
     <string name="dateItemTextView">"Creado el: "</string>
+    <string name="emailTF">Correo electrónico</string>
     <string name="nameTF">Nombre</string>
     <string name="lastnameTF">Apellido</string>
     <string name="pass1TF">Ingrese la contraseña</string>
@@ -25,4 +38,19 @@
     <string name="opt1">Actualizar</string>
     <string name="opt2">Cerrar Sesión</string>
     <string name="opt3">Acerca de</string>
+    <string name="loginTM">Datos equivocados!</string>
+    <string name="exitTitleAD">Cerrar Sesión</string>
+    <string name="exitMsgAD">Esta a punto de cerrar sesión, estas seguro?</string>
+    <string name="positiveButtonAD">Si</string>
+    <string name="negativeButtonAD">No</string>
+    <string name="editButtonAD">Editar</string>
+    <string name="cancelButtonAD">Cancelar</string>
+    <string name="deleteButtonAD">Borrar</string>
+    <string name="addButtonAD">Añadir</string>
+    <string name="editTitleAD">Editar post</string>
+    <string name="addNewPostTitleAD">Añadir nuevo post</string>
+    <string name="tagsTV">Etiquetas: %s</string>
+    <string name="reactionTV">Reacciones: %d</string>
+    <string name="userTV">Creado por: %s</string>
+    <string name="dateTV">Creado el: %s</string>
 </resources>

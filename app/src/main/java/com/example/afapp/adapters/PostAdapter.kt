@@ -1,7 +1,6 @@
 package com.example.afapp.adapters
 
-import android.content.Context
-import android.content.res.ColorStateList
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.R
 import com.example.afapp.database.Post
-import com.example.afapp.database.utils.SessionManager
 import com.example.afapp.databinding.ItemPostBinding
 
 class PostAdapter(
@@ -37,6 +35,7 @@ class PostAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateItems(results: List<Post>?) {
         items = results!!
         notifyDataSetChanged()
@@ -57,10 +56,10 @@ class PostViewHolder(
 
         binding.titleItemTextView.text = post.title
         binding.bodyItemTextView.text = post.body
-        binding.tagsItemTextView.text = "Tags: ${post.tags}"
-        binding.userItemTextView.text = "Created by: $user"
-        binding.reactionsItemTextView.text = "Reactions: ${post.reactions}"
-        binding.dateItemTextView.text = "Created at: $dateFormat"
+        binding.tagsItemTextView.text = itemView.context.getString(R.string.tagsTV, post.tags)
+        binding.userItemTextView.text = itemView.context.getString(R.string.userTV, user)
+        binding.reactionsItemTextView.text = itemView.context.getString(R.string.reactionTV, post.reactions)
+        binding.dateItemTextView.text = itemView.context.getString(R.string.dateTV, dateFormat)
 
         val favDrawableId = if (post.like) {
             R.drawable.heart_selected
