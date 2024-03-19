@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/opt1"
-        android:title="Refresh"
+        android:title="@string/opt1"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/opt2"
-        android:title="Logout"
+        android:title="@string/opt2"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/opt3"
-        android:title="About"
+        android:title="@string/opt3"
         app:showAsAction="never" />
 
 </menu>

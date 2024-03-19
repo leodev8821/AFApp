@@ -3,10 +3,41 @@
 
     <string name="toastAbout">Created by LeoDev </string>
 
+    <!-- Main Activity -->
+    <string name="loginTitleTextView">Login</string>
+    <string name="emailTextField" translatable="false">Email</string>
+    <string name="passwordTextField">Password</string>
+    <string name="loginButton">Login</string>
+    <string name="registerButton">Register</string>
+
     <!-- For PostActivity -->
     <string name="empty_posts">No discussion to show</string>
-    <string name="empty_posts_advice">Press Refresh button on menu to load all posts</string>
+    <string name="empty_posts_advice">Press \"Refresh\" button on menu to load all posts</string>
+    <string name="newPostFloatingActionButton">New post</string>
 
     <!-- For ItemPost -->
-    <string name="tags">Tags:</string>
+    <string name="tagsItemTextView">"Tags: "</string>
+    <string name="userItemTextView">Created by: </string>
+    <string name="reactionsItemTextView">Reactions: </string>
+    <string name="dateItemTextView">Created at: </string>
+
+    <!-- For Activity_User_Register -->
+    <string name="emailTF" translatable="false">Email</string>
+    <string name="nameTF">Name</string>
+    <string name="lastnameTF">Lastname</string>
+    <string name="pass1TF">Enter password</string>
+    <string name="pass2TF">Confirm password</string>
+    <string name="createUserButton">Register</string>
+    <string name="clearButton">Clear all</string>
+
+    <!-- For New_Post_Alert_Dialog -->
+    <string name="titleTextField">Title</string>
+    <string name="bodyTextField">Body</string>
+    <string name="tagsEditText">Tags</string>
+
+    <!-- For Main_Menu -->
+    <string name="opt1">Refresh</string>
+    <string name="opt2">Logout</string>
+    <string name="opt3">About</string>
+
 </resources>

@@ -24,7 +24,7 @@
             android:id="@+id/loginTitleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text = "Login"
+            android:text = "@string/loginTitleTextView"
             android:textSize="25sp"
             android:layout_margin="10dp"
             android:gravity="center"/>
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:selectAllOnFocus="true"
-                android:hint="Email"/>
+                android:hint="@string/emailTextField"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:selectAllOnFocus="true"
-                android:hint="Password"/>
+                android:hint="@string/passwordTextField"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,7 +70,7 @@
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="@string/loginButton"
                 android:layout_gravity="start"
                 style="@style/Widget.MaterialComponents.Button.Icon"/>
 
@@ -78,7 +78,7 @@
                 android:id="@+id/registerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Register"
+                android:text="@string/registerButton"
                 android:layout_gravity="end"
                 style="@style/Widget.MaterialComponents.Button.TextButton"/>
         </FrameLayout>

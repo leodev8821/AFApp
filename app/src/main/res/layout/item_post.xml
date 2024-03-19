@@ -15,7 +15,7 @@
         android:layout_gravity="end"
         android:padding="5dp"
         android:textColor="@color/lowWeight"
-        android:text="Created by: "/>
+        android:text="@string/userItemTextView"/>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Content"
-                android:background="@drawable/textlines"
+                android:background="@drawable/text_lines"
                 style="@style/Body"/>
 
 
@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:text="Tags: "
+                    android:text="@string/tagsItemTextView"
                     android:textColor="@color/lowWeight"/>
 
                 <TextView
@@ -64,31 +64,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text= "Reactions: "
+                    android:text= "@string/reactionsItemTextView"
                     android:textColor="@color/lowWeight"/>
 
             </FrameLayout>
 
             <TextView
-                android:id="@+id/dateItemtextView"
+                android:id="@+id/dateItemTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:background="@color/white"
-                android:text="Created at: "
+                android:text="@string/dateItemTextView"
                 android:textColor="@color/lowWeight"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/reactFAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:rippleColor="@color/red"
                 app:tint="@color/red"
+                android:backgroundTint="@color/white"
                 android:clickable="true"
                 android:elevation="6dp"
                 android:layout_margin="5dp"
                 android:layout_gravity="end|bottom"
-                android:src="@drawable/heart_unselected"/>
+                android:src="@drawable/heart_unselected"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

@@ -2,6 +2,7 @@ package com.example.afapp.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.R
@@ -31,6 +33,7 @@ import com.example.afapp.databinding.NewPostAlertDialogBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.random.Random
@@ -198,11 +201,11 @@ class PostsActivity : AppCompatActivity() {
         if(like){
             reaction = 1
             reactionsController(post,like, reaction, position)
-            Toast.makeText(this, "Like +1", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Like", Toast.LENGTH_SHORT).show()
         }else{
             reaction = -1
             reactionsController(post,like, reaction, position)
-            Toast.makeText(this, "Unlike -1", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Unlike", Toast.LENGTH_SHORT).show()
         }
         loadData()
     }
@@ -212,7 +215,6 @@ class PostsActivity : AppCompatActivity() {
         post.reactions = postReaction + reaction
         post.like = like
         postDAO.update(post)
-        adapter.notifyItemChanged(position)
     }
 
     private fun onPostClickListener(position: Int) {

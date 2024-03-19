@@ -15,7 +15,7 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:background">@color/green</item>
+        <item name="android:background">@color/blue</item>
         <item name="android:padding">5dp</item>
     </style>
 

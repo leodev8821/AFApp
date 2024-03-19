@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AnotherForumApp</string>
+    <string name="toastAbout">Creado por LeoDev</string>
+    <string name="loginTitleTextView">Iniciar Sesión</string>
+    <string name="passwordTextField">Contraseña</string>
+    <string name="loginButton">Iniciar Sesión</string>
+    <string name="registerButton">Registrarse</string>
+    <string name="empty_posts">No hay Post que mostrar</string>
+    <string name="empty_posts_advice">Presione el botón \"Actualizar\" en el  menú para cargar todos los Post</string>
+    <string name="newPostFloatingActionButton">Nuevo Post</string>
+    <string name="tagsItemTextView">"Etiquetas: "</string>
+    <string name="userItemTextView">"Creado por: "</string>
+    <string name="reactionsItemTextView">"Reacciones: "</string>
+    <string name="dateItemTextView">"Creado el: "</string>
+    <string name="nameTF">Nombre</string>
+    <string name="lastnameTF">Apellido</string>
+    <string name="pass1TF">Ingrese la contraseña</string>
+    <string name="pass2TF">Confirme la contraseña</string>
+    <string name="createUserButton">Registrarse</string>
+    <string name="clearButton">Borrar todo</string>
+    <string name="titleTextField">Título</string>
+    <string name="bodyTextField">Cuerpo del Post</string>
+    <string name="tagsEditText">Etiquetas</string>
+    <string name="opt1">Actualizar</string>
+    <string name="opt2">Cerrar Sesión</string>
+    <string name="opt3">Acerca de</string>
+</resources>

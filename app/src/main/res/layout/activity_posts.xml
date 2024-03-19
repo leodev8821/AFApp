@@ -33,7 +33,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:src="@drawable/post_svg"
-            android:layout_margin="30dp"/>
+            android:layout_margin="30dp"
+            android:clickable="true"
+            android:elevation="6dp"
+            android:backgroundTint="@color/blue"
+            app:tint="@color/cyan"
+            app:rippleColor="@color/blue"
+            android:contentDescription="@string/newPostFloatingActionButton" />
 
         <LinearLayout
             android:id="@+id/emptyPlaceholder"
@@ -53,14 +59,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_margin="10dp"
                     android:src="@drawable/arrow_down_circle_svg"
-                    app:tint="@color/grey" />
+                    app:tint="@color/purple_500"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,7 +86,8 @@
             <ProgressBar
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:background="@drawable/progressbar_style"/>
         </FrameLayout>
 
     </FrameLayout>

@@ -1,6 +1,8 @@
 package com.example.afapp.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -50,6 +52,7 @@ class PostViewHolder(
         post:Post,
         user:String,
     ){
+        val redColor = Color.parseColor("#FF0000")
         val dateFormat = DateFormat.format("dd-MMMM-yyyy", post.date)
 
         binding.titleItemTextView.text = post.title
@@ -57,7 +60,7 @@ class PostViewHolder(
         binding.tagsItemTextView.text = "Tags: ${post.tags}"
         binding.userItemTextView.text = "Created by: $user"
         binding.reactionsItemTextView.text = "Reactions: ${post.reactions}"
-        binding.dateItemtextView.text = "Created at: $dateFormat"
+        binding.dateItemTextView.text = "Created at: $dateFormat"
 
         val favDrawableId = if (post.like) {
             R.drawable.heart_selected
@@ -65,6 +68,7 @@ class PostViewHolder(
             R.drawable.heart_unselected
         }
         binding.reactFAB.setImageResource(favDrawableId)
+        binding.reactFAB.rippleColor = redColor
     }
 
 }
