@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -39,13 +40,12 @@ class PostsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPostsBinding
     private lateinit var bindingAlert:NewPostAlertDialogBinding
-    private lateinit var bindingItemPost:ItemPostBinding
+    private lateinit var bindingItemPost: ItemPostBinding
 
     private lateinit var progress:FrameLayout
     private lateinit var recyclerView:RecyclerView
     private lateinit var emptyPlaceholder:LinearLayout
     private lateinit var newPostButton:FloatingActionButton
-    private lateinit var reactFAB:FloatingActionButton
 
     private lateinit var postList:List<Post>
     private lateinit var newPost:Post
@@ -86,16 +86,14 @@ class PostsActivity : AppCompatActivity() {
         Log.i("LOGGED_EMAIL", loggedEmail)
 
         postList = postDAO.findAll()
-        adapter = PostAdapter(postList, loggedEmail) {
-            onItemClickListener(it)
-        }
+        adapter = PostAdapter(postList, loggedEmail,{
+            onPostClickListener(it)
+        }, {
+            onReactFABListener(it)
+        })
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-
-
-        bindingItemPost = ItemPostBinding.inflate(layoutInflater)
-        reactFAB = bindingItemPost.reactFAB
 
         //If Post is empty, no data is showed
         if(postDAO.find(1) == null){
@@ -116,11 +114,6 @@ class PostsActivity : AppCompatActivity() {
 
         newPostButton.setOnClickListener{
             newPostAlert()
-        }
-
-        reactFAB.setOnClickListener {
-            Toast.makeText(this, "Ha presionado el boton React!", Toast.LENGTH_LONG).show()
-
         }
     }
 
@@ -198,7 +191,40 @@ class PostsActivity : AppCompatActivity() {
         postDAO.insert(newPost)
     }
 
-    private fun onItemClickListener(position: Int) {
+    private fun onReactFABListener(position: Int){
+        var reactFAB:Boolean
+        reactFAB = true
+        val post:Post = postList[position]
+        val reaction:Int
+
+        if(reactFAB){
+            reaction = 1
+            reactionsController(post,reactFAB, reaction, position)
+            Toast.makeText(this, "Like +1", Toast.LENGTH_LONG).show()
+        }else{
+            reaction = -1
+            reactionsController(post,reactFAB, reaction, position)
+            Toast.makeText(this, "Unlike -1", Toast.LENGTH_LONG).show()
+        }
+        loadData()
+    }
+
+    private fun reactionsController(post:Post,reactFAB:Boolean, reaction:Int, position: Int){
+        bindingItemPost = ItemPostBinding.inflate(layoutInflater)
+        val postReaction:Int = post.reactions
+        post.reactions = postReaction + reaction
+        postDAO.update(post)
+        adapter.notifyItemChanged(position)
+
+        val favDrawableId = if (reactFAB) {
+            R.drawable.heart_selected
+        } else {
+            R.drawable.favorite_svg
+        }
+        bindingItemPost.reactFAB.setImageResource(favDrawableId)
+    }
+
+    private fun onPostClickListener(position: Int) {
         val post:Post = postList[position]
         showPostAlert(post.title, post.body, post.reactions, post.userPost, post.id, position)
 

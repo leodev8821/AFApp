@@ -82,14 +82,13 @@
                 android:id="@+id/reactFAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:rippleColor="@color/green"
+                app:rippleColor="#F63F55"
                 android:clickable="true"
                 android:elevation="6dp"
                 android:layout_margin="5dp"
                 android:layout_gravity="end|bottom"
-                android:background="@drawable/button_selector"
                 android:src="@drawable/favorite_svg"
-                style="?attr/floatingActionButtonSmallStyle"/>
+                style="?attr/floatingActionButtonSmallStyle" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
