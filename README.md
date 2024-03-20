@@ -133,7 +133,7 @@
   recyclerView.adapter = adapter
   ~~~
   
-  Las funciones lambda *onPostClickListener()* y *onReactFABListener()* se emplean para mostrar un cuadro de diálogo con cada uno de los Post
+  Las funciones lambda ***onPostClickListener()*** y ***onReactFABListener()*** se emplean para mostrar un cuadro de diálogo con cada uno de los Post
   y para mostrar una reacción a cada Post, respectivamente.
 
 * Mostrar un menú en la AppBar (barra superior) --> 0.5 pts
@@ -190,10 +190,10 @@
   
 * Internacionalización (un idioma es suficiente) --> 0.5 pts
 
-  Se aplica la internacionalización en cada uno de los apartados de texto de la aplicación, usando el archivo *strings.xml*
+  Se aplica la internacionalización en cada uno de los apartados de texto de la aplicación, usando el archivo ***strings.xml***
   y su respectiva aplicación en cada uno de los elementos de texto:
 
-  ##### Archivo strings.xml de la carpeta *res* #####
+  ##### Archivo strings.xml de la carpeta ***res*** #####
   ~~~
   <!-- For Toast Messages -->
   *English*
