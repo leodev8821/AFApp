@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.R
 import com.example.afapp.database.Post
+import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ItemPostBinding
 
 class PostAdapter(

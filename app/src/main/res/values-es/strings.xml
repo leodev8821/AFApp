@@ -10,7 +10,7 @@
     <string name="unsuccessPostTM">Post no editado exitósamente!</string>
     <string name="errorPostTM">Error de Post. Este post no existe!</string>
     <string name="erasedPostTM">El post ha sido borrado!</string>
-    <string name="updatingPostTM">Actualizando la Base de Datos...</string>
+    <string name="updatingPostTM">Actualizando la Base de Datos…</string>
     <string name="logoutPostTM">Has cerrado sesión</string>
     <string name="toastAbout">Creado por LeoDev</string>
     <string name="loginTitleTextView">Iniciar Sesión</string>
