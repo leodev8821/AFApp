@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.afapp.R
 import com.example.afapp.database.Post
+import com.example.afapp.database.User
 import com.example.afapp.database.providers.UserDAO
 import com.example.afapp.databinding.ItemPostBinding
 
@@ -50,15 +51,18 @@ class PostViewHolder(
 
     fun render(
         post:Post,
-        user:String,
+        userEmail:String,
     ){
         val redColor = Color.parseColor("#FF0000")
         val dateFormat = DateFormat.format("dd-MMMM-yyyy", post.date)
+        val userDAO:UserDAO = UserDAO(itemView.context)
+        val user: User? = userDAO.findById(post.userPost)
+
 
         binding.titleItemTextView.text = post.title
         binding.bodyItemTextView.text = post.body
         binding.tagsItemTextView.text = itemView.context.getString(R.string.tagsTV, post.tags)
-        binding.userItemTextView.text = itemView.context.getString(R.string.userTV, user)
+        binding.userItemTextView.text = itemView.context.getString(R.string.userTV, user!!.email)
         binding.reactionsItemTextView.text = itemView.context.getString(R.string.reactionTV, post.reactions)
         binding.dateItemTextView.text = itemView.context.getString(R.string.dateTV, dateFormat)
 
