@@ -81,7 +81,7 @@ class PostsActivity : AppCompatActivity() {
         loggedEmail = session.getUserLoginEmail().toString()
 
         postList = postDAO.findAll()
-        adapter = PostAdapter(postList, loggedEmail,{
+        adapter = PostAdapter(postList,{
             onPostClickListener(it)
         }, {
             onReactFABListener(it)
@@ -351,14 +351,19 @@ class PostsActivity : AppCompatActivity() {
 
     // To listen the item selected in a menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val refreshOpt:Int = R.id.opt1
-        val logOutOpt:Int = R.id.opt2
-        val aboutOpt:Int = R.id.opt3
+        val loggedUser:Int = R.id.opt1
+        val refreshOpt:Int = R.id.opt2
+        val logOutOpt:Int = R.id.opt3
+        val aboutOpt:Int = R.id.opt4
 
         when (item.itemId){
             android.R.id.home -> {
                 finish()
                 return true
+            }
+            // Logged User
+            loggedUser ->{
+                Toast.makeText(this, getString(R.string.opt1, loggedEmail), Toast.LENGTH_LONG).show()
             }
             // Refresh option
             refreshOpt ->{
@@ -366,9 +371,10 @@ class PostsActivity : AppCompatActivity() {
                     // If DB is empty, fill with the data from API
                     if(postDAO.find(1) == null){
                         fetchData()
+                        Toast.makeText(this, R.string.updatingPostTM, Toast.LENGTH_LONG).show()
                     }
                     loadData()
-                    Toast.makeText(this, R.string.updatingPostTM, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.updatingRecyclerViewTM, Toast.LENGTH_LONG).show()
                 }
             }
             //Logout option
@@ -392,6 +398,10 @@ class PostsActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        val userLogged = menu?.findItem(R.id.opt1)
+        if (userLogged != null) {
+            userLogged.title = getString(R.string.opt1, loggedEmail)
+        }
         return true
     }
 

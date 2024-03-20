@@ -34,9 +34,10 @@
     <string name="tagsEditText">Tags</string>
 
     <!-- For Main_Menu -->
-    <string name="opt1">Refresh</string>
-    <string name="opt2">Logout</string>
-    <string name="opt3">About</string>
+    <string name="opt1">User: %s</string>
+    <string name="opt2">Refresh</string>
+    <string name="opt3">Logout</string>
+    <string name="opt4">About</string>
 
     <!-- For Toast Messages -->
     <string name="newPostTM">New post added!</string>
@@ -49,6 +50,7 @@
     <string name="errorPostTM">Post Error. This post doesn\'t exist!"</string>
     <string name="erasedPostTM">The post has been erased!"</string>
     <string name="updatingPostTM">Updating Database…"</string>
+    <string name="updatingRecyclerViewTM">Updating List of Post…</string>
     <string name="logoutPostTM">You have logged out"</string>
     <string name="toastAbout">Created by LeoDev </string>
     <string name="loginTM">Wrong data!</string>

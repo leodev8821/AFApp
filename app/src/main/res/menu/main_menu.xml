@@ -17,4 +17,9 @@
         android:title="@string/opt3"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/opt4"
+        android:title="@string/opt4"
+        app:showAsAction="never" />
+
 </menu>

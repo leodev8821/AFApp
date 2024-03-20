@@ -14,7 +14,6 @@ import com.example.afapp.databinding.ItemPostBinding
 
 class PostAdapter(
     private var items:List<Post> = listOf(),
-    private var user:String = "",
     val onPostClickListener:(position:Int) -> Unit,
     val onReactFABListener:(position:Int) -> Unit,
 
@@ -28,7 +27,7 @@ class PostAdapter(
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder( holder: PostViewHolder, position: Int) {
-        holder.render(items[position], user)
+        holder.render(items[position])
         holder.itemView.setOnClickListener {
             onPostClickListener(position)
         }
@@ -51,11 +50,10 @@ class PostViewHolder(
 
     fun render(
         post:Post,
-        userEmail:String,
     ){
         val redColor = Color.parseColor("#FF0000")
         val dateFormat = DateFormat.format("dd-MMMM-yyyy", post.date)
-        val userDAO:UserDAO = UserDAO(itemView.context)
+        val userDAO = UserDAO(itemView.context)
         val user: User? = userDAO.findById(post.userPost)
 
 
